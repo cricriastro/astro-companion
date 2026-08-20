@@ -74,6 +74,15 @@
             font-weight: bold;
             margin: 10px 0;
         }
+        .moon-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+        .moon-icon { font-size: 2rem; }
         .score-label { color: var(--text-muted); font-size: 0.9rem; }
         
         .night-row { margin-bottom: 15px; }
@@ -216,21 +225,30 @@
     <!-- ========== MÉTÉO ========== -->
     <h2>🌙 Météo & Fenêtres de Tir</h2>
     <div class="card">
-        <button class="btn btn-primary" onclick="loadWeather()"> Charger ma position & météo</button>
+        <button class="btn btn-primary" onclick="loadWeather()">📍 Charger ma position & météo</button>
         <div id="weather-status" class="loading">Clique sur le bouton pour charger la météo</div>
         <div id="weather-content" style="display:none;">
             <div class="score-container">
                 <div class="score-label">Score de la nuit</div>
                 <div class="score-circle" id="score-circle">--</div>
                 <div id="location-name" style="color:var(--text-muted); font-size:0.9rem;"></div>
+                
+                <!-- Phase Lunaire -->
+                <div class="moon-info" id="moon-info" style="display:none;">
+                    <span class="moon-icon" id="moon-icon">🌑</span>
+                    <div>
+                        <div id="moon-phase-text">Nouvelle Lune</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">Illumination: <span id="moon-illumination">0</span>%</div>
+                    </div>
+                </div>
             </div>
             
             <div id="dew-alert-container"></div>
             
-            <h3>🌟 Fenêtres de tir (2 nuits)</h3>
+            <h3> Fenêtres de tir (2 nuits)</h3>
             <div id="windows-container"></div>
             
-            <h3> Prévisions heure par heure</h3>
+            <h3>⏰ Prévisions heure par heure</h3>
             <div class="legend">
                 <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> Bon</div>
                 <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div> Moyen</div>
@@ -258,7 +276,7 @@
     </div>
 
     <div class="card">
-        <label> Caméra Principale</label>
+        <label>📷 Caméra Principale</label>
         <select id="camera" onchange="calculate()">
             <option value="">-- Sélectionner --</option>
         </select>
@@ -279,9 +297,9 @@
     </div>
 
     <div class="card">
-        <label>🎨 Roue à Filtres</label>
+        <label>🎨 Roue ou Tiroir à Filtres</label>
         <select id="filterWheel" onchange="calculate()">
-            <option value="">-- Aucune --</option>
+            <option value="">-- Aucun --</option>
         </select>
     </div>
 
@@ -348,8 +366,10 @@
 </div>
 
 <script>
+// ========== BASE DE DONNÉES COMPLÈTE AVEC TON MATOS ==========
 const db = {
     mounts: [
+        { id: 'gtilt', name: 'Sky-Watcher GTi', capacity: 5, weight: 3.2, power: 2.5 },
         { id: 'heq5', name: 'Sky-Watcher HEQ5 Pro', capacity: 16, weight: 12.5, power: 3.5 },
         { id: 'eq6r', name: 'Sky-Watcher EQ6-R Pro', capacity: 20, weight: 16.5, power: 4.0 },
         { id: 'eq8r', name: 'Sky-Watcher EQ8-R Pro', capacity: 28, weight: 24.0, power: 8.0 },
@@ -360,6 +380,7 @@ const db = {
         { id: 'avx', name: 'Celestron AVX', capacity: 13, weight: 11.0, power: 4.0 }
     ],
     scopes: [
+        { id: 'woevolux62', name: 'William Optics Evolux 62ED', weight: 2.5 },
         { id: 'sw72', name: 'Sky-Watcher 72ED', weight: 2.5 },
         { id: 'sw80', name: 'Sky-Watcher 80ED', weight: 3.5 },
         { id: 'sw100', name: 'Sky-Watcher Esprit 100ED', weight: 5.5 },
@@ -372,6 +393,7 @@ const db = {
         { id: 'fsq85', name: 'Takahashi FSQ-85ED', weight: 3.8 }
     ],
     cameras: [
+        { id: 'asi183', name: 'ZWO ASI 183MC Pro', weight: 0.35, power: 8.0 },
         { id: 'asi120', name: 'ZWO ASI 120MC (non refroidie)', weight: 0.1, power: 2.0 },
         { id: 'asi533', name: 'ZWO ASI 533MC Pro', weight: 0.5, power: 10.0 },
         { id: 'asi2600', name: 'ZWO ASI 2600MC Pro', weight: 0.8, power: 12.0 },
@@ -394,7 +416,9 @@ const db = {
         { id: 'qhy5', name: 'QHY 5L-IIM', weight: 0.15, power: 2.5, pixel: 3.75 }
     ],
     filterWheels: [
-        { id: 'none', name: '-- Aucune --', weight: 0, power: 0 },
+        { id: 'none', name: '-- Aucun --', weight: 0, power: 0 },
+        { id: 'svbony2', name: 'SVBony Tiroir 2"', weight: 0.2, power: 0 },
+        { id: 'svbony125', name: 'SVBony Tiroir 1.25"', weight: 0.15, power: 0 },
         { id: 'efw7', name: 'ZWO EFW 7x36mm', weight: 0.6, power: 2.0 },
         { id: 'efw8', name: 'ZWO EFW 8x31mm', weight: 0.5, power: 2.0 },
         { id: 'efwmini', name: 'ZWO EFW Mini 5x1.25"', weight: 0.3, power: 1.5 },
@@ -402,8 +426,10 @@ const db = {
     ],
     reducers: [
         { id: 'none', name: '-- Aucun --', weight: 0, factor: 1 },
+        { id: 'wo08', name: 'William Optics 0.8x (Evolux 62)', weight: 0.3, factor: 0.8 },
         { id: 'sw085', name: 'Sky-Watcher 0.85x (80ED)', weight: 0.3, factor: 0.85 },
         { id: 'sw08', name: 'Sky-Watcher 0.8x (Esprit 100)', weight: 0.5, factor: 0.8 },
+        { id: 'sw075', name: 'Sky-Watcher 0.75x (120ED)', weight: 0.4, factor: 0.75 },
         { id: 'c063', name: 'Celestron 0.63x (C8)', weight: 0.3, factor: 0.63 },
         { id: 'ric075', name: 'Riccardi 0.75x', weight: 0.4, factor: 0.75 }
     ],
@@ -423,6 +449,11 @@ const db = {
         { id: 'moonlite', name: 'Moonlite New Classic', weight: 0.5, power: 3.5 }
     ],
     batteries: [
+        { id: 'bluetti_eb3a', name: 'BLUETTI EB3A (268Wh)', capacityWh: 268, weight: 4.6 },
+        { id: 'bluetti_eb55', name: 'BLUETTI EB55 (537Wh)', capacityWh: 537, weight: 7.5 },
+        { id: 'bluetti_eb70', name: 'BLUETTI EB70 (716Wh)', capacityWh: 716, weight: 9.7 },
+        { id: 'bluetti_ac180', name: 'BLUETTI AC180 (1152Wh)', capacityWh: 1152, weight: 16.0 },
+        { id: 'bluetti_ac200', name: 'BLUETTI AC200MAX (2048Wh)', capacityWh: 2048, weight: 28.0 },
         { id: 'lifepo4_20', name: 'LiFePO4 12V 20Ah (256Wh)', capacityWh: 256, weight: 2.5 },
         { id: 'lifepo4_50', name: 'LiFePO4 12V 50Ah (640Wh)', capacityWh: 640, weight: 6.0 },
         { id: 'lifepo4_100', name: 'LiFePO4 12V 100Ah (1280Wh)', capacityWh: 1280, weight: 12.0 },
@@ -456,6 +487,44 @@ function populateSelect(id, array) {
     });
 }
 
+// ========== CALCUL PHASE LUNAIRE ==========
+function getMoonPhase(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    
+    let c = 0, e = 0, jd = 0, b = 0;
+    
+    if (month < 3) {
+        year--;
+        month += 12;
+    }
+    
+    ++month;
+    c = 365.25 * year;
+    e = 30.6 * month;
+    jd = c + e + day - 694039.09;
+    jd /= 29.5305882;
+    b = parseInt(jd);
+    jd -= b;
+    b = Math.round(jd * 8);
+    
+    if (b >= 8) b = 0;
+    
+    const phases = [
+        { name: 'Nouvelle Lune', icon: '🌑', illumination: 0 },
+        { name: 'Premier croissant', icon: '🌒', illumination: 12 },
+        { name: 'Premier quartier', icon: '🌓', illumination: 25 },
+        { name: 'Gibbeuse croissante', icon: '🌔', illumination: 40 },
+        { name: 'Pleine Lune', icon: '🌕', illumination: 100 },
+        { name: 'Gibbeuse décroissante', icon: '🌖', illumination: 60 },
+        { name: 'Dernier quartier', icon: '🌗', illumination: 50 },
+        { name: 'Dernier croissant', icon: '🌘', illumination: 10 }
+    ];
+    
+    return phases[b];
+}
+
 async function loadWeather() {
     const status = document.getElementById('weather-status');
     status.textContent = '📍 Localisation en cours...';
@@ -471,13 +540,13 @@ async function loadWeather() {
         status.textContent = '🌐 Chargement des prévisions...';
         
         try {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m,wind_speed_10m&timezone=auto&forecast_days=3`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m,wind_speed_10m&daily=moonrise,moonset,moon_phase&timezone=auto&forecast_days=3`;
             const response = await fetch(url);
             const data = await response.json();
             
             displayWeather(data, lat, lon);
         } catch (err) {
-            status.textContent = ' Erreur : ' + err.message;
+            status.textContent = '❌ Erreur : ' + err.message;
         }
     }, (err) => {
         status.textContent = '❌ Accès GPS refusé. Active la géolocalisation.';
@@ -485,7 +554,6 @@ async function loadWeather() {
 }
 
 function getHourQuality(cloud, dewSpread) {
-    // Logique de qualité pour chaque heure
     if (cloud > 60 || dewSpread < 2) return 'bad';
     if (cloud > 30 || dewSpread < 4) return 'medium';
     return 'good';
@@ -496,8 +564,21 @@ function displayWeather(data, lat, lon) {
     document.getElementById('weather-content').style.display = 'block';
     
     const hourly = data.hourly;
+    const daily = data.daily;
     const now = new Date();
     const currentHour = now.getHours();
+    
+    // Phase lunaire
+    const moon = getMoonPhase(now);
+    document.getElementById('moon-info').style.display = 'flex';
+    document.getElementById('moon-icon').textContent = moon.icon;
+    document.getElementById('moon-phase-text').textContent = moon.name;
+    document.getElementById('moon-illumination').textContent = moon.illumination;
+    
+    // Couleur selon la lune (impact sur le score)
+    let moonPenalty = 0;
+    if (moon.illumination > 80) moonPenalty = 20;
+    else if (moon.illumination > 50) moonPenalty = 10;
     
     let totalScore = 0;
     let count = 0;
@@ -509,14 +590,14 @@ function displayWeather(data, lat, lon) {
             count++;
         }
     }
-    const avgScore = Math.round(totalScore / count);
+    const avgScore = Math.max(0, Math.round(totalScore / count) - moonPenalty);
     
     const circle = document.getElementById('score-circle');
     circle.textContent = avgScore + '/100';
     circle.style.borderColor = avgScore > 70 ? 'var(--success)' : avgScore > 40 ? 'var(--warning)' : 'var(--danger)';
     circle.style.color = avgScore > 70 ? 'var(--success)' : avgScore > 40 ? 'var(--warning)' : 'var(--danger)';
     
-    document.getElementById('location-name').textContent = ` Lat: ${lat.toFixed(2)}° | Lon: ${lon.toFixed(2)}°`;
+    document.getElementById('location-name').textContent = `📍 Lat: ${lat.toFixed(2)}° | Lon: ${lon.toFixed(2)}°`;
     
     // Alerte Point de Rosée
     const currentTemp = hourly.temperature_2m[currentHour];
@@ -536,7 +617,7 @@ function displayWeather(data, lat, lon) {
         dewContainer.innerHTML = `
             <div class="dew-warning">
                 ⚠️ Risque de buée modéré<br>
-                🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
+                ️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
                 🔥 Cordons chauffants à 40-60%
             </div>
         `;
