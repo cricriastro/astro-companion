@@ -70,10 +70,11 @@
             font-weight: bold;
             margin: 15px 0;
             position: relative;
+            transition: all 0.5s;
         }
-        .score-circle.good { border-color: #22c55e; color: #22c55e; }
-        .score-circle.medium { border-color: #f59e0b; color: #f59e0b; }
-        .score-circle.bad { border-color: #ef4444; color: #ef4444; }
+        .score-circle.good { border-color: #22c55e; color: #22c55e; box-shadow: 0 0 30px rgba(34, 197, 94, 0.4); }
+        .score-circle.medium { border-color: #f59e0b; color: #f59e0b; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); }
+        .score-circle.bad { border-color: #ef4444; color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
         
         /* Moon */
         .moon-info {
@@ -87,14 +88,25 @@
             border-radius: 12px;
         }
         .moon-icon { font-size: 3rem; }
+        .moon-phase { font-weight: bold; font-size: 1.1rem; }
+        .moon-illum { color: #94a3b8; font-size: 0.9rem; }
         
         /* Windows */
+        .window-row {
+            margin-bottom: 15px;
+        }
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
         .window-bar {
             display: flex;
-            height: 50px;
+            height: 45px;
             border-radius: 12px;
             overflow: hidden;
-            margin: 15px 0;
         }
         .window-segment {
             display: flex;
@@ -102,31 +114,59 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .seg-good { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .seg-medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .seg-bad { background: linear-gradient(135deg, #ef4444, #dc2626); }
         
-        /* Hourly */
+        /* Hourly - SCROLL FIX */
+        .hourly-container {
+            margin-top: 20px;
+        }
+        .hourly-label {
+            color: #94a3b8;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
         .hourly-scroll {
             display: flex;
-            overflow-x: auto;
             gap: 10px;
-            padding: 10px 0;
+            overflow-x: auto;
+            padding: 10px 5px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #38bdf8 #1e293b;
+        }
+        .hourly-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .hourly-scroll::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .hourly-scroll::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
         }
         .hour-box {
-            min-width: 75px;
+            min-width: 80px;
+            flex-shrink: 0;
             background: rgba(15, 23, 42, 0.8);
             border-radius: 12px;
             padding: 12px;
             text-align: center;
             border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .hour-box:hover {
+            transform: translateY(-3px);
         }
         .hour-box.good { border-color: #22c55e; background: rgba(34, 197, 94, 0.2); }
         .hour-box.medium { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); }
         .hour-box.bad { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); }
         .hour-box .time { font-weight: bold; color: #38bdf8; margin-bottom: 5px; }
+        .hour-box .cloud, .hour-box .temp { margin: 3px 0; font-size: 0.9rem; }
         
         /* Material selects */
         .form-group { margin-bottom: 15px; }
@@ -151,6 +191,33 @@
             border-color: #38bdf8;
         }
         
+        /* Checkbox for heaters */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+        
         /* Buttons */
         .btn {
             width: 100%;
@@ -163,8 +230,12 @@
             background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             color: #0f172a;
             margin-top: 10px;
+            transition: all 0.3s;
         }
-        .btn:hover { transform: translateY(-2px); }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
         
         /* Progress */
         .progress-bg {
@@ -192,20 +263,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .target-name { font-weight: bold; font-size: 1.1rem; }
+        .target-name { font-weight: bold; font-size: 1.05rem; }
         .target-score { 
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: bold;
+            font-size: 0.9rem;
         }
+        .target-type { color: #94a3b8; font-size: 0.85rem; margin-bottom: 8px; }
         .target-filters {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
             flex-wrap: wrap;
         }
         .filter-tag {
@@ -213,10 +285,18 @@
             color: #38bdf8;
             padding: 4px 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         
         /* ASIAIR Settings */
+        .settings-title {
+            color: #38bdf8;
+            margin: 25px 0 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .settings-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -229,7 +309,7 @@
         }
         .setting-label {
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 5px;
         }
         .setting-value {
@@ -240,6 +320,33 @@
         .slider {
             width: 100%;
             margin: 10px 0;
+            cursor: pointer;
+        }
+        
+        /* Weight display */
+        .weight-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+        }
+        .weight-title {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .weight-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        .weight-status {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 8px;
         }
         
         @media (max-width: 768px) {
@@ -258,21 +365,24 @@
             <div class="panel">
                 <h2>🌙 Météo & Fenêtres</h2>
                 <button class="btn" onclick="loadWeather()">📍 Charger météo</button>
-                <div id="weather-content" style="display:none; margin-top:20px;">
+                <div id="weather-content" style="display:none;">
                     <div class="score-container">
                         <div class="score-circle" id="score-circle">--</div>
-                        <div id="location-name"></div>
+                        <div id="location-name" style="color:#94a3b8; font-size:0.9rem;"></div>
                     </div>
-                    <div class="moon-info" id="moon-info">
+                    
+                    <div class="moon-info" id="moon-info" style="display:none;">
                         <span class="moon-icon" id="moon-icon">🌑</span>
                         <div>
-                            <div id="moon-phase">Nouvelle Lune</div>
-                            <div style="color:#94a3b8; font-size:0.9rem;">Illumination: <span id="moon-illum">0</span>%</div>
+                            <div class="moon-phase" id="moon-phase">Nouvelle Lune</div>
+                            <div class="moon-illum">Illumination: <span id="moon-illum">0</span>%</div>
                         </div>
                     </div>
+                    
                     <div id="windows-container"></div>
-                    <div style="margin-top:20px;">
-                        <div style="color:#94a3b8; margin-bottom:10px;"> Prévisions heure par heure</div>
+                    
+                    <div class="hourly-container">
+                        <div class="hourly-label">⏰ Prévisions heure par heure</div>
                         <div class="hourly-scroll" id="hourly-container"></div>
                     </div>
                 </div>
@@ -281,141 +391,194 @@
             <!-- PANEL 2: SETUP -->
             <div class="panel">
                 <h2>🔧 Mon Setup</h2>
+                
                 <div class="form-group">
                     <label>Monture</label>
                     <select id="mount" onchange="calculate()">
                         <option value="">-- Sélectionner --</option>
                         <option value="gtilt">Sky-Watcher GTi (5kg)</option>
+                        <option value="gtiaz">Sky-Watcher GTi AZ (7kg)</option>
                         <option value="heq5">Sky-Watcher HEQ5 Pro (16kg)</option>
                         <option value="eq6r">Sky-Watcher EQ6-R Pro (20kg)</option>
-                        <option value="am5">ZWO AM5 (20kg)</option>
+                        <option value="eq8r">Sky-Watcher EQ8-R Pro (28kg)</option>
+                        <option value="am5">ZWO AM3 / AM5 (20kg)</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Tube Optique</label>
                     <select id="scope" onchange="calculate()">
                         <option value="">-- Sélectionner --</option>
                         <option value="swevolux62">Sky-Watcher Evolux 62ED</option>
+                        <option value="sw72">Sky-Watcher 72ED</option>
                         <option value="sw80">Sky-Watcher 80ED</option>
+                        <option value="sw100">Sky-Watcher Esprit 100ED</option>
                         <option value="sw120">Sky-Watcher 120ED</option>
                         <option value="wr51">William Optics RedCat 51</option>
+                        <option value="wr73">William Optics Zenithstar 73</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Caméra Principale</label>
                     <select id="camera" onchange="calculate()">
                         <option value="">-- Sélectionner --</option>
                         <option value="asi183">ZWO ASI 183MC Pro</option>
                         <option value="asi2600">ZWO ASI 2600MC Pro</option>
+                        <option value="asi294">ZWO ASI 294MC Pro</option>
                         <option value="asi533">ZWO ASI 533MC Pro</option>
+                        <option value="asi6200">ZWO ASI 6200MC Pro</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Lunette Guide</label>
                     <select id="guideScope" onchange="calculate()">
                         <option value="">-- Aucune --</option>
-                        <option value="zwo30">ZWO 30mm f/4 Mini</option>
-                        <option value="zwo60">ZWO 60mm f/4.6</option>
+                        <option value="zwo30">ZWO 30mm f/4 Mini (120mm)</option>
+                        <option value="zwo60">ZWO 60mm f/4.6 (280mm)</option>
+                        <option value="zwo120">ZWO 120mm f/7.5 (900mm)</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Caméra Guide</label>
                     <select id="guideCamera" onchange="calculate()">
                         <option value="">-- Aucune --</option>
                         <option value="asi120mm">ZWO ASI 120MM Mini</option>
                         <option value="asi290mm">ZWO ASI 290MM Mini</option>
+                        <option value="asi462">ZWO ASI 462MC</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Filtres</label>
                     <select id="filterWheel" onchange="calculate()">
                         <option value="none">-- Aucun --</option>
                         <option value="svbony2">SVBony Tiroir 2"</option>
+                        <option value="svbony125">SVBony Tiroir 1.25"</option>
                         <option value="efw7">ZWO EFW 7x36mm</option>
+                        <option value="efw8">ZWO EFW 8x31mm</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Réducteur</label>
                     <select id="reducer" onchange="calculate()">
                         <option value="none">-- Aucun --</option>
-                        <option value="wo08">William Optics 0.8x</option>
-                        <option value="sw085">Sky-Watcher 0.85x</option>
+                        <option value="wo08">William Optics 0.8x (Evolux 62)</option>
+                        <option value="sw085">Sky-Watcher 0.85x (80ED)</option>
+                        <option value="sw08">Sky-Watcher 0.8x (Esprit 100)</option>
+                        <option value="c063">Celestron 0.63x (C8)</option>
                     </select>
                 </div>
+                
+                <div class="form-group">
+                    <label>🔥 Cordons Chauffants</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="heaterObjective" onchange="calculate()">
+                            <label for="heaterObjective">Cordon objectif (15-25W)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="heaterGuide" onchange="calculate()">
+                            <label for="heaterGuide">Cordon guide (8-12W)</label>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label>Contrôleur</label>
                     <select id="controller" onchange="calculate()">
                         <option value="none">-- Aucun --</option>
                         <option value="asiairplus">ASIAIR Plus</option>
                         <option value="asiairmini">ASIAIR Mini</option>
+                        <option value="asiairpro">ASIAIR Pro</option>
+                        <option value="minipc">Mini PC Intel NUC</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label>Batterie</label>
+                    <label>Moteur Focus (EAF)</label>
+                    <select id="eaf" onchange="calculate()">
+                        <option value="none">-- Aucun --</option>
+                        <option value="zwoeaf">ZWO EAF</option>
+                        <option value="pegfc">Pegasus Focus Cube</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Batterie (au sol)</label>
                     <select id="battery" onchange="calculate()">
                         <option value="">-- Sélectionner --</option>
                         <option value="bluetti_eb3a">BLUETTI EB3A (268Wh)</option>
                         <option value="bluetti_eb55">BLUETTI EB55 (537Wh)</option>
+                        <option value="bluetti_eb70">BLUETTI EB70 (716Wh)</option>
+                        <option value="bluetti_ac180">BLUETTI AC180 (1152Wh)</option>
+                        <option value="lifepo4_20">LiFePO4 20Ah (256Wh)</option>
                         <option value="lifepo4_50">LiFePO4 50Ah (640Wh)</option>
+                        <option value="lifepo4_100">LiFePO4 100Ah (1280Wh)</option>
                     </select>
                 </div>
                 
-                <div style="margin-top:20px; padding:20px; background:rgba(15,23,42,0.6); border-radius:12px;">
-                    <div style="text-align:center; margin-bottom:15px;">
-                        <div style="color:#94a3b8; font-size:0.9rem;">Poids Total</div>
-                        <div class="setting-value" id="weight-text">0 kg / 0 kg</div>
-                    </div>
+                <div class="weight-section">
+                    <div class="weight-title">Poids Total sur la monture</div>
+                    <div class="weight-value" id="weight-text">0 kg / 0 kg</div>
                     <div class="progress-bg">
                         <div class="progress-fill" id="weight-bar" style="width:0%; background:#22c55e;"></div>
                     </div>
-                    <div id="weight-status" style="text-align:center; color:#94a3b8;"></div>
+                    <div class="weight-status" id="weight-status"></div>
                     
-                    <div style="text-align:center; margin-top:20px; padding-top:20px; border-top:1px solid #334155;">
-                        <div style="color:#94a3b8; font-size:0.9rem;">Autonomie</div>
-                        <div class="setting-value" id="power-text">0 heures</div>
-                        <div style="color:#94a3b8; font-size:0.85rem; margin-top:5px;">Conso: <span id="consumption-text">0</span>W</div>
+                    <div style="margin-top:20px; padding-top:20px; border-top:1px solid #334155;">
+                        <div class="weight-title">Autonomie Estimée</div>
+                        <div class="weight-value" id="power-text">0 heures</div>
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem;">
+                            Conso: <span id="consumption-text">0</span>W
+                        </div>
                     </div>
                 </div>
+                
+                <button class="btn" onclick="saveSetup()" style="margin-top:15px;">💾 Sauvegarder</button>
             </div>
             
             <!-- PANEL 3: CIBLES & ASIAIR -->
             <div class="panel">
-                <h2>🎯 Cibles & ASIAIR</h2>
+                <h2> Cibles & ASIAIR</h2>
+                
+                <div class="settings-title">Cibles recommandées</div>
                 <div id="targets-container">
-                    <div style="color:#94a3b8; text-align:center; padding:40px;">
-                        Sélectionne ton setup pour voir les cibles recommandées
+                    <div style="color:#94a3b8; text-align:center; padding:30px;">
+                        Sélectionne ton setup pour voir les cibles
                     </div>
                 </div>
                 
-                <div style="margin-top:30px;">
-                    <h3 style="color:#38bdf8; margin-bottom:15px;">⚙️ Réglages ASIAIR</h3>
-                    <div class="settings-grid">
-                        <div class="setting-box">
-                            <div class="setting-label">Calibration</div>
-                            <div class="setting-value" id="calib-value">6s</div>
-                        </div>
-                        <div class="setting-box">
-                            <div class="setting-label">Agressivité RA</div>
-                            <div class="setting-value" id="ra-agg">70%</div>
-                            <input type="range" class="slider" min="0" max="100" value="70" id="ra-slider">
-                        </div>
-                        <div class="setting-box">
-                            <div class="setting-label">Agressivité DEC</div>
-                            <div class="setting-value" id="dec-agg">70%</div>
-                            <input type="range" class="slider" min="0" max="100" value="70" id="dec-slider">
-                        </div>
-                        <div class="setting-box">
-                            <div class="setting-label">Temps de pose guide</div>
-                            <div class="setting-value" id="guide-exposure">2s</div>
-                        </div>
-                        <div class="setting-box">
-                            <div class="setting-label">Gain caméra guide</div>
-                            <div class="setting-value" id="guide-gain">120</div>
-                        </div>
-                        <div class="setting-box">
-                            <div class="setting-label">Min Move</div>
-                            <div class="setting-value" id="min-move">0.15"</div>
-                        </div>
+                <div class="settings-title">️ Réglages ASIAIR</div>
+                <div class="settings-grid">
+                    <div class="setting-box">
+                        <div class="setting-label">Calibration</div>
+                        <div class="setting-value" id="calib-value">6s</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Agressivité RA</div>
+                        <div class="setting-value" id="ra-agg">70%</div>
+                        <input type="range" class="slider" min="0" max="100" value="70" id="ra-slider" oninput="updateSlider('ra-agg', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Agressivité DEC</div>
+                        <div class="setting-value" id="dec-agg">70%</div>
+                        <input type="range" class="slider" min="0" max="100" value="70" id="dec-slider" oninput="updateSlider('dec-agg', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Temps pose guide</div>
+                        <div class="setting-value" id="guide-exposure">2s</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Gain caméra guide</div>
+                        <div class="setting-value" id="guide-gain">120</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Min Move</div>
+                        <div class="setting-value" id="min-move">0.15"</div>
                     </div>
                 </div>
             </div>
@@ -423,59 +586,86 @@
     </div>
 
     <script>
-        // Base de données
+        // Base de données complète
         const db = {
             mounts: {
                 'gtilt': { capacity: 5, power: 2.5 },
+                'gtiaz': { capacity: 7, power: 2.5 },
                 'heq5': { capacity: 16, power: 3.5 },
                 'eq6r': { capacity: 20, power: 4.0 },
+                'eq8r': { capacity: 28, power: 8.0 },
                 'am5': { capacity: 20, power: 3.0 }
             },
             scopes: {
                 'swevolux62': { weight: 2.5 },
+                'sw72': { weight: 2.5 },
                 'sw80': { weight: 3.5 },
+                'sw100': { weight: 5.5 },
                 'sw120': { weight: 6.5 },
-                'wr51': { weight: 2.0 }
+                'wr51': { weight: 2.0 },
+                'wr73': { weight: 3.2 }
             },
             cameras: {
                 'asi183': { weight: 0.35, power: 8.0 },
                 'asi2600': { weight: 0.8, power: 12.0 },
-                'asi533': { weight: 0.5, power: 10.0 }
+                'asi294': { weight: 0.6, power: 11.0 },
+                'asi533': { weight: 0.5, power: 10.0 },
+                'asi6200': { weight: 0.9, power: 15.0 }
             },
             guideScopes: {
                 'zwo30': { weight: 0.3, focal: 120 },
-                'zwo60': { weight: 0.8, focal: 280 }
+                'zwo60': { weight: 0.8, focal: 280 },
+                'zwo120': { weight: 1.5, focal: 900 }
             },
             guideCameras: {
                 'asi120mm': { weight: 0.15, power: 2.0, pixel: 3.75 },
-                'asi290mm': { weight: 0.15, power: 2.0, pixel: 2.9 }
+                'asi290mm': { weight: 0.15, power: 2.0, pixel: 2.9 },
+                'asi462': { weight: 0.2, power: 3.0, pixel: 2.9 }
             },
             filters: {
                 'none': { weight: 0, power: 0 },
                 'svbony2': { weight: 0.2, power: 0 },
-                'efw7': { weight: 0.6, power: 2.0 }
+                'svbony125': { weight: 0.15, power: 0 },
+                'efw7': { weight: 0.6, power: 2.0 },
+                'efw8': { weight: 0.5, power: 2.0 }
             },
             reducers: {
                 'none': { weight: 0 },
                 'wo08': { weight: 0.3 },
-                'sw085': { weight: 0.3 }
+                'sw085': { weight: 0.3 },
+                'sw08': { weight: 0.5 },
+                'c063': { weight: 0.3 }
             },
             controllers: {
                 'none': { weight: 0, power: 0 },
                 'asiairplus': { weight: 0.3, power: 6.0 },
-                'asiairmini': { weight: 0.2, power: 4.0 }
+                'asiairmini': { weight: 0.2, power: 4.0 },
+                'asiairpro': { weight: 0.35, power: 8.0 },
+                'minipc': { weight: 0.8, power: 25.0 }
+            },
+            eafs: {
+                'none': { weight: 0, power: 0 },
+                'zwoeaf': { weight: 0.4, power: 3.0 },
+                'pegfc': { weight: 0.3, power: 2.5 }
             },
             batteries: {
                 'bluetti_eb3a': { capacityWh: 268 },
                 'bluetti_eb55': { capacityWh: 537 },
-                'lifepo4_50': { capacityWh: 640 }
+                'bluetti_eb70': { capacityWh: 716 },
+                'bluetti_ac180': { capacityWh: 1152 },
+                'lifepo4_20': { capacityWh: 256 },
+                'lifepo4_50': { capacityWh: 640 },
+                'lifepo4_100': { capacityWh: 1280 }
             },
             targets: [
-                { name: 'M42 - Nébuleuse Orion', type: 'Nébuleuse', score: 95, filters: ['Ha', 'OIII', 'SII'], season: ['Hiver'] },
-                { name: 'M31 - Galaxie Andromède', type: 'Galaxie', score: 88, filters: ['L', 'RGB'], season: ['Automne', 'Hiver'] },
-                { name: 'M13 - Amas Hercule', type: 'Amas', score: 82, filters: ['L'], season: ['Été'] },
-                { name: 'M57 - Nébuleuse Anneau', type: 'Planétaire', score: 90, filters: ['OIII'], season: ['Été'] },
-                { name: 'M8 - Nébuleuse Lagune', type: 'Nébuleuse', score: 85, filters: ['Ha', 'OIII'], season: ['Été'] }
+                { name: 'M42 - Nébuleuse Orion', type: 'Nébuleuse émission', score: 95, filters: ['Ha', 'OIII', 'SII'], season: ['Automne', 'Hiver', 'Printemps'] },
+                { name: 'M31 - Galaxie Andromède', type: 'Galaxie spirale', score: 88, filters: ['L', 'RGB', 'Ha'], season: ['Automne', 'Hiver'] },
+                { name: 'M57 - Nébuleuse Anneau', type: 'Nébuleuse planétaire', score: 90, filters: ['OIII'], season: ['Été', 'Automne'] },
+                { name: 'M8 - Nébuleuse Lagune', type: 'Nébuleuse émission', score: 85, filters: ['Ha', 'OIII'], season: ['Été'] },
+                { name: 'M13 - Amas Hercule', type: 'Amas globulaire', score: 82, filters: ['L', 'RGB'], season: ['Printemps', 'Été'] },
+                { name: 'M20 - Nébuleuse Trifide', type: 'Nébuleuse émission', score: 83, filters: ['Ha', 'OIII'], season: ['Été'] },
+                { name: 'M51 - Galaxie Tourbillon', type: 'Galaxie spirale', score: 87, filters: ['L', 'RGB'], season: ['Printemps', 'Été'] },
+                { name: 'NGC 7000 - Amérique Nord', type: 'Nébuleuse émission', score: 80, filters: ['Ha'], season: ['Été', 'Automne'] }
             ]
         };
 
@@ -486,10 +676,13 @@
             const cameraId = document.getElementById('camera').value;
             const guideScopeId = document.getElementById('guideScope').value;
             const guideCameraId = document.getElementById('guideCamera').value;
-            const filterId = document.getElementById('filterWheel').value;
-            const reducerId = document.getElementById('reducer').value;
-            const controllerId = document.getElementById('controller').value;
+            const filterId = document.getElementById('filterWheel').value || 'none';
+            const reducerId = document.getElementById('reducer').value || 'none';
+            const controllerId = document.getElementById('controller').value || 'none';
+            const eafId = document.getElementById('eaf').value || 'none';
             const batteryId = document.getElementById('battery').value;
+            const heaterObjective = document.getElementById('heaterObjective').checked;
+            const heaterGuide = document.getElementById('heaterGuide').checked;
             
             if (!mountId || !scopeId || !cameraId || !batteryId) return;
             
@@ -498,7 +691,7 @@
             const camera = db.cameras[cameraId];
             const battery = db.batteries[batteryId];
             
-            // Calcul poids (SANS batterie)
+            // Calcul poids (SANS batterie - elle est au sol)
             let totalWeight = scope.weight + camera.weight;
             let totalPower = mount.power + camera.power;
             
@@ -516,6 +709,18 @@
                 totalWeight += db.controllers[controllerId].weight;
                 totalPower += db.controllers[controllerId].power;
             }
+            if (eafId && eafId !== 'none') {
+                totalWeight += db.eafs[eafId].weight;
+                totalPower += db.eafs[eafId].power;
+            }
+            if (heaterObjective) {
+                totalWeight += 0.15;
+                totalPower += 20;
+            }
+            if (heaterGuide) {
+                totalWeight += 0.05;
+                totalPower += 10;
+            }
             
             // Affichage poids
             const percentage = (totalWeight / mount.capacity) * 100;
@@ -525,13 +730,16 @@
             
             if (percentage < 70) {
                 bar.style.background = '#22c55e';
-                document.getElementById('weight-status').textContent = '✅ Charge optimale';
+                document.getElementById('weight-status').textContent = '✅ Charge optimale (Suivi précis)';
+                document.getElementById('weight-status').style.color = '#22c55e';
             } else if (percentage < 90) {
                 bar.style.background = '#f59e0b';
-                document.getElementById('weight-status').textContent = '⚠️ Charge acceptable';
+                document.getElementById('weight-status').textContent = '️ Charge acceptable';
+                document.getElementById('weight-status').style.color = '#f59e0b';
             } else {
                 bar.style.background = '#ef4444';
                 document.getElementById('weight-status').textContent = '🚨 SURCHARGE!';
+                document.getElementById('weight-status').style.color = '#ef4444';
             }
             
             // Autonomie
@@ -548,27 +756,36 @@
         function showTargets() {
             const container = document.getElementById('targets-container');
             const currentMonth = new Date().getMonth();
-            const seasons = ['Hiver', 'Printemps', 'Été', 'Automne'];
-            const currentSeason = seasons[Math.floor(((currentMonth + 1) % 12) / 3)];
+            
+            // Déterminer la saison
+            let currentSeason;
+            if (currentMonth >= 2 && currentMonth <= 4) currentSeason = 'Printemps';
+            else if (currentMonth >= 5 && currentMonth <= 7) currentSeason = 'Été';
+            else if (currentMonth >= 8 && currentMonth <= 10) currentSeason = 'Automne';
+            else currentSeason = 'Hiver';
             
             const filteredTargets = db.targets.filter(t => t.season.includes(currentSeason));
             filteredTargets.sort((a, b) => b.score - a.score);
             
-            let html = '<h3 style="color:#38bdf8; margin-bottom:15px;"> Cibles recommandées</h3>';
-            filteredTargets.slice(0, 3).forEach(target => {
-                html += `
-                    <div class="target-card">
-                        <div class="target-header">
-                            <div class="target-name">${target.name}</div>
-                            <div class="target-score">${target.score}/100</div>
+            let html = '';
+            if (filteredTargets.length === 0) {
+                html = '<div style="color:#94a3b8; text-align:center; padding:20px;">Aucune cible recommandée pour cette saison</div>';
+            } else {
+                filteredTargets.slice(0, 5).forEach(target => {
+                    html += `
+                        <div class="target-card">
+                            <div class="target-header">
+                                <div class="target-name">${target.name}</div>
+                                <div class="target-score">${target.score}/100</div>
+                            </div>
+                            <div class="target-type">${target.type}</div>
+                            <div class="target-filters">
+                                ${target.filters.map(f => `<span class="filter-tag">${f}</span>`).join('')}
+                            </div>
                         </div>
-                        <div style="color:#94a3b8; font-size:0.9rem; margin-bottom:8px;">${target.type}</div>
-                        <div class="target-filters">
-                            ${target.filters.map(f => `<span class="filter-tag">${f}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             
             container.innerHTML = html;
         }
@@ -578,14 +795,20 @@
             const guideScopeId = document.getElementById('guideScope').value;
             const guideCameraId = document.getElementById('guideCamera').value;
             
-            if (!guideScopeId || !guideCameraId) return;
+            if (!guideScopeId || !guideCameraId) {
+                document.getElementById('calib-value').textContent = '6s';
+                document.getElementById('guide-exposure').textContent = '2s';
+                document.getElementById('guide-gain').textContent = '120';
+                document.getElementById('min-move').textContent = '0.15"';
+                return;
+            }
             
             const guideScope = db.guideScopes[guideScopeId];
             const guideCamera = db.guideCameras[guideCameraId];
             
             // Calcul calibration
             const pixelScale = (guideCamera.pixel * 206.265) / guideScope.focal;
-            const calibTime = Math.round(12 / pixelScale);
+            const calibTime = Math.max(2, Math.round(12 / pixelScale));
             
             document.getElementById('calib-value').textContent = `${calibTime}s`;
             document.getElementById('guide-exposure').textContent = '2s';
@@ -593,13 +816,20 @@
             document.getElementById('min-move').textContent = '0.15"';
         }
 
+        // Update slider display
+        function updateSlider(elementId, value) {
+            document.getElementById(elementId).textContent = value + '%';
+        }
+
         // Charger météo
         async function loadWeather() {
             const btn = document.querySelector('.btn');
+            const originalText = btn.textContent;
             btn.textContent = '📍 Chargement...';
             
             if (!navigator.geolocation) {
                 alert('Géolocalisation non supportée');
+                btn.textContent = originalText;
                 return;
             }
             
@@ -613,66 +843,102 @@
                     const data = await response.json();
                     
                     displayWeather(data, lat, lon);
-                    btn.textContent = '📍 Charger météo';
+                    btn.textContent = originalText;
                 } catch (err) {
                     alert('Erreur: ' + err.message);
-                    btn.textContent = '📍 Charger météo';
+                    btn.textContent = originalText;
                 }
+            }, () => {
+                alert('Accès GPS refusé');
+                btn.textContent = originalText;
             });
         }
 
         function displayWeather(data, lat, lon) {
-            document.getElementById('weather-content').style.display = 'block';
+            const content = document.getElementById('weather-content');
+            content.style.display = 'block';
             document.getElementById('location-name').textContent = `📍 ${lat.toFixed(2)}° | ${lon.toFixed(2)}°`;
             
             const hourly = data.hourly;
+            if (!hourly || !hourly.cloud_cover) {
+                alert('Données météo invalides');
+                return;
+            }
+            
             const now = new Date();
             const currentHour = now.getHours();
             
-            // Score
+            // Calcul score
             let totalScore = 0;
             let count = 0;
             for (let i = 0; i < 8 && (currentHour + i) < hourly.cloud_cover.length; i++) {
-                totalScore += (100 - (hourly.cloud_cover[currentHour + i] || 0));
-                count++;
+                const cloud = hourly.cloud_cover[currentHour + i];
+                if (cloud !== undefined) {
+                    totalScore += (100 - cloud);
+                    count++;
+                }
             }
             const avgScore = count > 0 ? Math.round(totalScore / count) : 0;
             
+            // Affichage score
             const circle = document.getElementById('score-circle');
             circle.textContent = `${avgScore}/100`;
             circle.className = 'score-circle ' + (avgScore > 70 ? 'good' : avgScore > 40 ? 'medium' : 'bad');
             
-            // Lune (simplifié)
-            const moonPhases = ['🌑', '', '🌓', '🌔', '🌕', '🌖', '', '🌘'];
-            const moonIndex = Math.floor((now.getDate() % 29.5) / 3.7);
-            document.getElementById('moon-icon').textContent = moonPhases[moonIndex % 8];
-            document.getElementById('moon-illum').textContent = Math.round((moonIndex % 8) * 12.5);
+            // Lune - Calcul CORRECT
+            const moonPhase = calculateMoonPhase(now);
+            document.getElementById('moon-info').style.display = 'flex';
+            document.getElementById('moon-icon').textContent = moonPhase.icon;
+            document.getElementById('moon-phase').textContent = moonPhase.name;
+            document.getElementById('moon-illum').textContent = moonPhase.illumination + '%';
             
-            // Fenêtres
+            // Fenêtres de tir
             const windowsContainer = document.getElementById('windows-container');
             let html = '<div style="margin-top:20px;">';
+            
             for (let day = 0; day < 2; day++) {
                 const date = new Date(now);
                 date.setDate(date.getDate() + day);
-                const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+                const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
                 
                 let good = 0, medium = 0, bad = 0;
+                
+                // Heures de nuit (20h à 6h)
                 for (let h = 20; h < 24; h++) {
                     const idx = h + day * 24;
                     if (idx < hourly.cloud_cover.length) {
                         const cloud = hourly.cloud_cover[idx];
-                        if (cloud < 30) good++;
-                        else if (cloud < 60) medium++;
+                        const temp = hourly.temperature_2m[idx] || 0;
+                        const dew = hourly.dew_point_2m[idx] || 0;
+                        const dewSpread = temp - dew;
+                        
+                        if (cloud < 30 && dewSpread > 2) good++;
+                        else if (cloud < 60 && dewSpread > 2) medium++;
+                        else bad++;
+                    }
+                }
+                for (let h = 0; h < 6; h++) {
+                    const idx = h + (day + 1) * 24;
+                    if (idx < hourly.cloud_cover.length) {
+                        const cloud = hourly.cloud_cover[idx];
+                        const temp = hourly.temperature_2m[idx] || 0;
+                        const dew = hourly.dew_point_2m[idx] || 0;
+                        const dewSpread = temp - dew;
+                        
+                        if (cloud < 30 && dewSpread > 2) good++;
+                        else if (cloud < 60 && dewSpread > 2) medium++;
                         else bad++;
                     }
                 }
                 
-                const total = good + medium + bad || 1;
+                const total = good + medium + bad;
+                const exploitable = good + medium;
+                
                 html += `
-                    <div style="margin-bottom:15px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:bold;">
-                            <span>${dateStr.toUpperCase()}</span>
-                            <span style="color:#38bdf8;">${good + medium}h exploitables</span>
+                    <div class="window-row">
+                        <div class="window-header">
+                            <span>${dateStr}</span>
+                            <span style="color:#38bdf8;">${exploitable}h exploitables</span>
                         </div>
                         <div class="window-bar">
                             ${good > 0 ? `<div class="window-segment seg-good" style="width:${(good/total)*100}%">${good}h EXCELLENT</div>` : ''}
@@ -685,64 +951,104 @@
             html += '</div>';
             windowsContainer.innerHTML = html;
             
-            // Prévisions heure par heure
+            // Prévisions heure par heure (12h)
             const hourlyContainer = document.getElementById('hourly-container');
             hourlyContainer.innerHTML = '';
+            
             for (let i = 0; i < 12 && (currentHour + i) < hourly.time.length; i++) {
                 const idx = currentHour + i;
                 const time = new Date(hourly.time[idx]).getHours() + 'h';
                 const cloud = hourly.cloud_cover[idx] || 0;
                 const temp = Math.round(hourly.temperature_2m[idx] || 0);
+                const dew = Math.round(hourly.dew_point_2m[idx] || 0);
+                const dewSpread = (hourly.temperature_2m[idx] || 0) - (hourly.dew_point_2m[idx] || 0);
                 
-                const quality = cloud < 30 ? 'good' : cloud < 60 ? 'medium' : 'bad';
+                let quality = 'bad';
+                if (cloud < 30 && dewSpread > 2) quality = 'good';
+                else if (cloud < 60 && dewSpread > 2) quality = 'medium';
                 
                 const box = document.createElement('div');
                 box.className = `hour-box ${quality}`;
                 box.innerHTML = `
                     <div class="time">${time}</div>
-                    <div>☁️ ${cloud}%</div>
-                    <div>🌡️ ${temp}°C</div>
+                    <div class="cloud">☁️ ${cloud}%</div>
+                    <div class="temp">🌡️ ${temp}°C</div>
+                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:3px;">💧 ${dew}°C</div>
                 `;
                 hourlyContainer.appendChild(box);
             }
         }
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger setup sauvegardé
+        // Calcul phase lunaire PRÉCIS
+        function calculateMoonPhase(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            let c = 0, e = 0, jd = 0, b = 0;
+            
+            if (month < 3) {
+                year--;
+                month += 12;
+            }
+            
+            ++month;
+            c = 365.25 * year;
+            e = 30.6 * month;
+            jd = c + e + day - 694039.09;
+            jd /= 29.5305882;
+            b = parseInt(jd);
+            jd -= b;
+            b = Math.round(jd * 8);
+            
+            if (b >= 8) b = 0;
+            
+            const phases = [
+                { name: 'Nouvelle Lune', icon: '🌑', illumination: 0 },
+                { name: 'Premier croissant', icon: '🌒', illumination: 12 },
+                { name: 'Premier quartier', icon: '🌓', illumination: 25 },
+                { name: 'Gibbeuse croissante', icon: '🌔', illumination: 40 },
+                { name: 'Pleine Lune', icon: '🌕', illumination: 100 },
+                { name: 'Gibbeuse décroissante', icon: '🌖', illumination: 60 },
+                { name: 'Dernier quartier', icon: '🌗', illumination: 50 },
+                { name: 'Dernier croissant', icon: '', illumination: 10 }
+            ];
+            
+            return phases[b];
+        }
+
+        // Sauvegarder setup
+        function saveSetup() {
+            const setup = {};
+            ['mount', 'scope', 'camera', 'guideScope', 'guideCamera', 'filterWheel', 'reducer', 'controller', 'eaf', 'battery'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) setup[id] = el.value;
+            });
+            setup.heaterObjective = document.getElementById('heaterObjective').checked;
+            setup.heaterGuide = document.getElementById('heaterGuide').checked;
+            
+            localStorage.setItem('astroSetup', JSON.stringify(setup));
+            alert('✅ Setup sauvegardé!');
+        }
+
+        // Charger setup au démarrage
+        window.addEventListener('DOMContentLoaded', () => {
             const saved = localStorage.getItem('astroSetup');
             if (saved) {
                 const setup = JSON.parse(saved);
                 Object.keys(setup).forEach(key => {
                     const el = document.getElementById(key);
                     if (el) {
-                        if (el.type === 'checkbox') el.checked = setup[key];
-                        else el.value = setup[key];
+                        if (key === 'heaterObjective' || key === 'heaterGuide') {
+                            el.checked = setup[key];
+                        } else {
+                            el.value = setup[key];
+                        }
                     }
                 });
                 calculate();
             }
         });
-
-        // Sauvegarder
-        function saveSetup() {
-            const setup = {};
-            ['mount', 'scope', 'camera', 'guideScope', 'guideCamera', 'filterWheel', 'reducer', 'controller', 'battery'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) setup[id] = el.value;
-            });
-            localStorage.setItem('astroSetup', JSON.stringify(setup));
-            alert('✅ Setup sauvegardé!');
-        }
-
-        // Ajouter bouton sauvegarde
-        const btn = document.querySelector('.btn');
-        const saveBtn = document.createElement('button');
-        saveBtn.className = 'btn';
-        saveBtn.textContent = '💾 Sauvegarder';
-        saveBtn.onclick = saveSetup;
-        saveBtn.style.marginTop = '10px';
-        document.querySelector('.panel:nth-child(2)').appendChild(saveBtn);
     </script>
 </body>
 </html>
