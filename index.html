@@ -104,12 +104,24 @@
             padding: 10px 0;
         }
         .hour-box {
-            min-width: 60px;
-            background: #0f172a;
+            min-width: 65px;
             border-radius: 8px;
             padding: 8px;
             text-align: center;
             font-size: 0.75rem;
+            border: 2px solid transparent;
+        }
+        .hour-good {
+            background-color: #14532d;
+            border-color: var(--success);
+        }
+        .hour-medium {
+            background-color: #713f12;
+            border-color: var(--warning);
+        }
+        .hour-bad {
+            background-color: #7f1d1d;
+            border-color: var(--danger);
         }
         .hour-box .time { font-weight: bold; color: var(--accent); }
         
@@ -143,6 +155,15 @@
             text-align: center;
             font-weight: bold;
         }
+        .dew-warning {
+            background-color: #713f12;
+            border: 2px solid var(--warning);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
         .dew-ok {
             background-color: #14532d;
             border: 2px solid var(--success);
@@ -150,6 +171,7 @@
             padding: 12px;
             margin: 10px 0;
             text-align: center;
+            font-weight: bold;
         }
         .checkbox-row {
             display: flex;
@@ -165,12 +187,30 @@
             margin: 0;
             font-weight: normal;
         }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1> Astro Companion</h1>
+    <h1>🔭 Astro Companion</h1>
     <p class="subtitle">Ton compagnon de session astrophotographie</p>
 
     <!-- ========== MÉTÉO ========== -->
@@ -185,13 +225,17 @@
                 <div id="location-name" style="color:var(--text-muted); font-size:0.9rem;"></div>
             </div>
             
-            <!-- Alerte Point de Rosée -->
             <div id="dew-alert-container"></div>
             
             <h3>🌟 Fenêtres de tir (2 nuits)</h3>
             <div id="windows-container"></div>
             
-            <h3>⏰ Prévisions heure par heure</h3>
+            <h3> Prévisions heure par heure</h3>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> Bon</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div> Moyen</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div> Mauvais</div>
+            </div>
             <div class="hourly-scroll" id="hourly-container"></div>
         </div>
     </div>
@@ -214,7 +258,7 @@
     </div>
 
     <div class="card">
-        <label>📷 Caméra Principale</label>
+        <label> Caméra Principale</label>
         <select id="camera" onchange="calculate()">
             <option value="">-- Sélectionner --</option>
         </select>
@@ -228,28 +272,28 @@
     </div>
 
     <div class="card">
-        <label> Caméra de Guidage</label>
+        <label>📹 Caméra de Guidage</label>
         <select id="guideCamera" onchange="calculate()">
             <option value="">-- Sélectionner --</option>
         </select>
     </div>
 
     <div class="card">
-        <label> Roue à Filtres</label>
+        <label>🎨 Roue à Filtres</label>
         <select id="filterWheel" onchange="calculate()">
             <option value="">-- Aucune --</option>
         </select>
     </div>
 
     <div class="card">
-        <label> Réducteur de Focale</label>
+        <label>🔍 Réducteur de Focale</label>
         <select id="reducer" onchange="calculate()">
             <option value="">-- Aucun --</option>
         </select>
     </div>
 
     <div class="card">
-        <label> Cordons Chauffants</label>
+        <label>🔥 Cordons Chauffants</label>
         <div class="checkbox-row">
             <input type="checkbox" id="heaterObjective" onchange="calculate()">
             <label for="heaterObjective">Cordon objectif (15-25W)</label>
@@ -275,13 +319,13 @@
     </div>
 
     <div class="card">
-        <label>🔋 Batterie</label>
+        <label> Batterie</label>
         <select id="battery" onchange="calculate()">
             <option value="">-- Sélectionner --</option>
         </select>
     </div>
 
-    <h2>⚖️ Analyse du Setup</h2>
+    <h2>️ Analyse du Setup</h2>
     <div class="card">
         <div class="result-box">
             <div>Poids Total sur la monture</div>
@@ -304,7 +348,6 @@
 </div>
 
 <script>
-// ========== BASE DE DONNÉES COMPLÈTE ==========
 const db = {
     mounts: [
         { id: 'heq5', name: 'Sky-Watcher HEQ5 Pro', capacity: 16, weight: 12.5, power: 3.5 },
@@ -389,7 +432,6 @@ const db = {
     ]
 };
 
-// ========== INITIALISATION ==========
 function init() {
     populateSelect('mount', db.mounts);
     populateSelect('scope', db.scopes);
@@ -414,7 +456,6 @@ function populateSelect(id, array) {
     });
 }
 
-// ========== MÉTÉO AVEC POINT DE ROSÉE ==========
 async function loadWeather() {
     const status = document.getElementById('weather-status');
     status.textContent = '📍 Localisation en cours...';
@@ -430,18 +471,24 @@ async function loadWeather() {
         status.textContent = '🌐 Chargement des prévisions...';
         
         try {
-            // API avec point de rosée (dew_point_2m)
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m,wind_speed_10m&timezone=auto&forecast_days=3`;
             const response = await fetch(url);
             const data = await response.json();
             
             displayWeather(data, lat, lon);
         } catch (err) {
-            status.textContent = '❌ Erreur : ' + err.message;
+            status.textContent = ' Erreur : ' + err.message;
         }
     }, (err) => {
         status.textContent = '❌ Accès GPS refusé. Active la géolocalisation.';
     });
+}
+
+function getHourQuality(cloud, dewSpread) {
+    // Logique de qualité pour chaque heure
+    if (cloud > 60 || dewSpread < 2) return 'bad';
+    if (cloud > 30 || dewSpread < 4) return 'medium';
+    return 'good';
 }
 
 function displayWeather(data, lat, lon) {
@@ -452,7 +499,6 @@ function displayWeather(data, lat, lon) {
     const now = new Date();
     const currentHour = now.getHours();
     
-    // Calcul du score global
     let totalScore = 0;
     let count = 0;
     for (let i = 0; i < 8; i++) {
@@ -483,13 +529,13 @@ function displayWeather(data, lat, lon) {
             <div class="dew-alert">
                 💧 RISQUE DE BUÉE ÉLEVÉ !<br>
                 🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
-                 Active tes cordons chauffants à 70-100%
+                🔥 Active tes cordons chauffants à 70-100%
             </div>
         `;
     } else if (dewSpread <= 4) {
         dewContainer.innerHTML = `
-            <div class="dew-ok" style="background-color:#713f12; border-color:var(--warning);">
-                 Risque de buée modéré<br>
+            <div class="dew-warning">
+                ⚠️ Risque de buée modéré<br>
                 🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
                 🔥 Cordons chauffants à 40-60%
             </div>
@@ -518,15 +564,21 @@ function displayWeather(data, lat, lon) {
         for (let h = 20; h < 24; h++) {
             const idx = h + day * 24;
             const cloud = hourly.cloud_cover[idx] || 0;
-            if (cloud < 30) excellentHours++;
-            else if (cloud < 60) correctHours++;
+            const dew = hourly.dew_point_2m[idx] || 0;
+            const temp = hourly.temperature_2m[idx] || 0;
+            const quality = getHourQuality(cloud, temp - dew);
+            if (quality === 'good') excellentHours++;
+            else if (quality === 'medium') correctHours++;
             else badHours++;
         }
         for (let h = 0; h < 6; h++) {
             const idx = h + (day + 1) * 24;
             const cloud = hourly.cloud_cover[idx] || 0;
-            if (cloud < 30) excellentHours++;
-            else if (cloud < 60) correctHours++;
+            const dew = hourly.dew_point_2m[idx] || 0;
+            const temp = hourly.temperature_2m[idx] || 0;
+            const quality = getHourQuality(cloud, temp - dew);
+            if (quality === 'good') excellentHours++;
+            else if (quality === 'medium') correctHours++;
             else badHours++;
         }
         
@@ -547,7 +599,7 @@ function displayWeather(data, lat, lon) {
         windowsContainer.appendChild(row);
     }
     
-    // Prévisions heure par heure
+    // Prévisions heure par heure AVEC COULEURS
     const hourlyContainer = document.getElementById('hourly-container');
     hourlyContainer.innerHTML = '';
     for (let i = 0; i < 12; i++) {
@@ -557,20 +609,22 @@ function displayWeather(data, lat, lon) {
             const cloud = hourly.cloud_cover[idx] || 0;
             const temp = Math.round(hourly.temperature_2m[idx]);
             const dew = Math.round(hourly.dew_point_2m[idx]);
+            const dewSpread = hourly.temperature_2m[idx] - hourly.dew_point_2m[idx];
+            const quality = getHourQuality(cloud, dewSpread);
+            
             const box = document.createElement('div');
-            box.className = 'hour-box';
+            box.className = `hour-box hour-${quality}`;
             box.innerHTML = `
                 <div class="time">${time}</div>
                 <div>☁️ ${cloud}%</div>
-                <div>️ ${temp}°C</div>
-                <div style="color:var(--text-muted); font-size:0.65rem;">💧${dew}°C</div>
+                <div>🌡️ ${temp}°C</div>
+                <div style="font-size:0.65rem;">💧${dew}°C</div>
             `;
             hourlyContainer.appendChild(box);
         }
     }
 }
 
-// ========== CALCUL SETUP COMPLET ==========
 function calculate() {
     const mountId = document.getElementById('mount').value;
     const scopeId = document.getElementById('scope').value;
@@ -592,7 +646,6 @@ function calculate() {
     const camera = db.cameras.find(c => c.id === cameraId);
     const battery = db.batteries.find(b => b.id === batteryId);
     
-    // Poids et conso des accessoires (optionnels)
     let totalWeight = scope.weight + camera.weight + battery.weight;
     let totalPower = mount.power + camera.power;
     
@@ -616,7 +669,7 @@ function calculate() {
     }
     if (heaterObjective) {
         totalWeight += 0.15;
-        totalPower += 20; // Moyenne à 50% PWM
+        totalPower += 20;
     }
     if (heaterGuide) {
         totalWeight += 0.05;
