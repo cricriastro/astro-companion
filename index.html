@@ -1,1 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Companion - Setup</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: var(--accent); font-size: 1.5rem; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: var(--text-muted); margin-top: 25px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        
+        .result-box {
+            background-color: #0f172a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .progress-bg {
+            background-color: #334155;
+            border-radius: 10px;
+            height: 20px;
+            width: 100%;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease, background-color 0.5s ease;
+        }
+        .status-text { font-weight: bold; margin-top: 5px; font-size: 1.1rem; }
+        
+        .btn-save {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-save:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h1>🔭 Astro Companion</h1>
+    <p style="text-align:center; color:var(--text-muted); font-size:0.9rem;">Configure ton setup pour la nuit</p>
+
+    <!-- MENU 1: MONTURE -->
+    <h2>🏗️ Monture</h2>
+    <div class="card">
+        <label>Modèle de monture</label>
+        <select id="mount" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+            <!-- Rempli par JS -->
+        </select>
+        <div id="mount-info" style="font-size:0.85rem; color:var(--text-muted);"></div>
+    </div>
+
+    <!-- MENU 2: TUBE OPTIQUE -->
+    <h2>🔭 Tube Optique</h2>
+    <div class="card">
+        <label>Lunette / Télescope</label>
+        <select id="scope" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <!-- MENU 3: CAMÉRA -->
+    <h2>📷 Caméra Principale</h2>
+    <div class="card">
+        <label>Caméra</label>
+        <select id="camera" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <!-- MENU 4: BATTERIE -->
+    <h2>🔋 Batterie</h2>
+    <div class="card">
+        <label>Alimentation</label>
+        <select id="battery" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <!-- RÉSULTATS -->
+    <h2>⚖️ Analyse du Setup</h2>
+    <div class="card">
+        <div class="result-box">
+            <div>Poids Total sur la monture</div>
+            <div class="status-text" id="weight-text">0 kg / 0 kg</div>
+            <div class="progress-bg">
+                <div class="progress-fill" id="weight-bar" style="width: 0%; background-color: var(--success);"></div>
+            </div>
+            <div id="weight-status" style="margin-top:10px; font-size:0.9rem;">En attente...</div>
+        </div>
+
+        <div class="result-box" style="margin-top:15px;">
+            <div>Autonomie Estimée (par 10°C)</div>
+            <div class="status-text" id="power-text">0 heures</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">
+                Conso totale : <span id="consumption-text">0</span> W
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-save" onclick="saveSetup()">💾 Sauvegarder mon Setup</button>
+</div>
+
+<script>
+    // --- BASE DE DONNÉES (Étape 1) ---
+    const db = {
+        mounts: [
+            { id: 'heq5', name: 'Sky-Watcher HEQ5 Pro', capacity: 16, weight: 12.5, power: 3.5 },
+            { id: 'eq6r', name: 'Sky-Watcher EQ6-R Pro', capacity: 20, weight: 16.5, power: 4.0 },
+            { id: 'am5', name: 'ZWO AM3 / AM5', capacity: 20, weight: 9.5, power: 3.0 },
+            { id: 'cem40', name: 'iOptron CEM40', capacity: 18, weight: 11.0, power: 3.5 }
+        ],
+        scopes: [
+            { id: 'sw80', name: 'Sky-Watcher 80ED', weight: 3.5 },
+            { id: 'sw120', name: 'Sky-Watcher 120ED', weight: 6.5 },
+            { id: 'wr51', name: 'William Optics RedCat 51', weight: 2.0 },
+            { id: 'c8', name: 'Celestron C8 (SCT)', weight: 5.5 }
+        ],
+        cameras: [
+            { id: 'asi2600', name: 'ZWO ASI 2600MC Pro', weight: 0.8, power: 12 }, // Moyenne avec refroidissement
+            { id: 'asi533', name: 'ZWO ASI 533MC Pro', weight: 0.5, power: 10 },
+            { id: 'asi294', name: 'ZWO ASI 294MC Pro', weight: 0.6, power: 11 }
+        ],
+        batteries: [
+            { id: 'lifepo4_20', name: 'LiFePO4 12V 20Ah', capacityWh: 256, weight: 2.5 },
+            { id: 'lifepo4_50', name: 'LiFePO4 12V 50Ah', capacityWh: 640, weight: 6.0 },
+            { id: 'jackery500', name: 'Jackery 500 (Li-ion)', capacityWh: 518, weight: 6.5 }
+        ]
+    };
+
+    // --- INITIALISATION ---
+    function init() {
+        populateSelect('mount', db.mounts);
+        populateSelect('scope', db.scopes);
+        populateSelect('camera', db.cameras);
+        populateSelect('battery', db.batteries);
+        loadSetup();
+    }
+
+    function populateSelect(id, array) {
+        const select = document.getElementById(id);
+        array.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            select.appendChild(option);
+        });
+    }
+
+    // --- MOTEUR DE CALCUL ---
+    function calculate() {
+        const mountId = document.getElementById('mount').value;
+        const scopeId = document.getElementById('scope').value;
+        const cameraId = document.getElementById('camera').value;
+        const batteryId = document.getElementById('battery').value;
+
+        if (!mountId || !scopeId || !cameraId || !batteryId) return;
+
+        const mount = db.mounts.find(m => m.id === mountId);
+        const scope = db.scopes.find(s => s.id === scopeId);
+        const camera = db.cameras.find(c => c.id === cameraId);
+        const battery = db.batteries.find(b => b.id === batteryId);
+
+        // Calcul Poids
+        const totalWeight = scope.weight + camera.weight + battery.weight;
+        const capacity = mount.capacity;
+        const percentage = (totalWeight / capacity) * 100;
+
+        // Affichage Poids
+        document.getElementById('weight-text').textContent = `${totalWeight.toFixed(1)} kg / ${capacity} kg`;
+        const bar = document.getElementById('weight-bar');
+        const status = document.getElementById('weight-status');
+        
+        bar.style.width = `${Math.min(percentage, 100)}%`;
+        
+        if (percentage < 70) {
+            bar.style.backgroundColor = 'var(--success)';
+            status.textContent = '✅ Charge optimale (Suivi précis)';
+            status.style.color = 'var(--success)';
+        } else if (percentage < 90) {
+            bar.style.backgroundColor = 'var(--warning)';
+            status.textContent = '⚠️ Charge acceptable (Surveiller le backlash)';
+            status.style.color = 'var(--warning)';
+        } else {
+            bar.style.backgroundColor = 'var(--danger)';
+            status.textContent = ' SURCHARGE ! Risque de perte de suivi.';
+            status.style.color = 'var(--danger)';
+        }
+
+        // Calcul Autonomie
+        const totalConsumption = mount.power + camera.power + 2; // +2W pour ASIAIR/Guidage base
+        // Formule simple : Capacité / Conso. (On affinera avec la température plus tard)
+        const autonomy = battery.capacityWh / totalConsumption;
+        
+        document.getElementById('consumption-text').textContent = totalConsumption.toFixed(1);
+        document.getElementById('power-text').textContent = `${autonomy.toFixed(1)} heures`;
+    }
+
+    // --- SAUVEGARDE LOCALE ---
+    function saveSetup() {
+        const setup = {
+            mount: document.getElementById('mount').value,
+            scope: document.getElementById('scope').value,
+            camera: document.getElementById('camera').value,
+            battery: document.getElementById('battery').value
+        };
+        localStorage.setItem('astroSetup', JSON.stringify(setup));
+        alert('✅ Setup sauvegardé dans le navigateur !');
+    }
+
+    function loadSetup() {
+        const saved = localStorage.getItem('astroSetup');
+        if (saved) {
+            const setup = JSON.parse(saved);
+            document.getElementById('mount').value = setup.mount || '';
+            document.getElementById('scope').value = setup.scope || '';
+            document.getElementById('camera').value = setup.camera || '';
+            document.getElementById('battery').value = setup.battery || '';
+            calculate();
+        }
+    }
+
+    // Lancer l'appli
+    init();
+</script>
+
+</body>
+</html>
