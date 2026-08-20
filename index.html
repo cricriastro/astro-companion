@@ -168,6 +168,7 @@
             transition: all 0.3s;
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .progress-bg { background: #334155; border-radius: 10px; height: 25px; margin: 15px 0; overflow: hidden; }
         .progress-fill { height: 100%; transition: all 0.5s; border-radius: 10px; }
         .target-card {
@@ -189,7 +190,9 @@
         .setting-label { color: #94a3b8; font-size: 0.85rem; margin-bottom: 5px; }
         .setting-value { font-size: 1.3rem; font-weight: bold; color: #38bdf8; }
         .setting-detail { color: #94a3b8; font-size: 0.75rem; margin-top: 5px; }
-        .slider { width: 100%; margin: 10px 0; cursor: pointer; }
+        .slider-container { margin-top: 10px; }
+        .slider { width: 100%; margin: 5px 0; cursor: pointer; accent-color: #38bdf8; }
+        .slider-value { text-align: center; color: #38bdf8; font-weight: bold; font-size: 0.9rem; }
         .weight-section { margin-top: 20px; padding: 20px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; }
         .weight-title { text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; }
         .weight-value { text-align: center; font-size: 1.5rem; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
@@ -201,7 +204,8 @@
             padding: 10px;
             margin: 10px 0;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #38bdf8;
         }
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
@@ -218,7 +222,7 @@
             <!-- PANEL 1: METEO -->
             <div class="panel">
                 <h2>🌙 Météo & Fenêtres</h2>
-                <button class="btn" onclick="loadWeather()">📍 Charger météo</button>
+                <button class="btn" id="btn-meteo" onclick="loadWeather()">📍 Charger météo</button>
                 <div id="weather-content" style="display:none;">
                     <div class="score-container">
                         <div class="score-circle" id="score-circle">--</div>
@@ -391,6 +395,7 @@
                         <div class="progress-fill" id="weight-bar" style="width:0%; background:#22c55e;"></div>
                     </div>
                     <div class="weight-status" id="weight-status"></div>
+                    <div id="delta-container"></div>
                     
                     <div style="margin-top:20px; padding-top:20px; border-top:1px solid #334155;">
                         <div class="weight-title">Autonomie Estimée</div>
@@ -401,7 +406,7 @@
                     </div>
                 </div>
                 
-                <button class="btn" onclick="saveSetup()" style="margin-top:15px;">💾 Sauvegarder</button>
+                <button class="btn" id="btn-save" onclick="saveSetup()">💾 Sauvegarder</button>
             </div>
             
             <!-- PANEL 3: CIBLES & ASIAIR -->
@@ -415,7 +420,7 @@
                     </div>
                 </div>
                 
-                <div class="settings-title">⚙️ Réglages ASIAIR</div>
+                <div class="settings-title">️ Réglages ASIAIR</div>
                 <div class="settings-grid">
                     <div class="setting-box">
                         <div class="setting-label">Calibration (ASIAIR)</div>
@@ -424,13 +429,17 @@
                     </div>
                     <div class="setting-box">
                         <div class="setting-label">Agressivité RA</div>
-                        <div class="setting-value" id="ra-agg">70%</div>
-                        <input type="range" class="slider" min="0" max="100" value="70" id="ra-slider" oninput="updateSlider('ra-agg', this.value)">
+                        <div class="slider-container">
+                            <input type="range" class="slider" min="0" max="100" value="70" id="ra-slider" oninput="updateSlider('ra-value', this.value)">
+                            <div class="slider-value" id="ra-value">70%</div>
+                        </div>
                     </div>
                     <div class="setting-box">
                         <div class="setting-label">Agressivité DEC</div>
-                        <div class="setting-value" id="dec-agg">70%</div>
-                        <input type="range" class="slider" min="0" max="100" value="70" id="dec-slider" oninput="updateSlider('dec-agg', this.value)">
+                        <div class="slider-container">
+                            <input type="range" class="slider" min="0" max="100" value="70" id="dec-slider" oninput="updateSlider('dec-value', this.value)">
+                            <div class="slider-value" id="dec-value">70%</div>
+                        </div>
                     </div>
                     <div class="setting-box">
                         <div class="setting-label">Temps pose guide</div>
@@ -451,7 +460,7 @@
 
     <script>
         // Variable globale pour la température ambiante
-        let currentAmbientTemp = 15; // Valeur par défaut
+        let currentAmbientTemp = 15;
 
         // Base de données complète
         const db = {
@@ -566,8 +575,6 @@
             // Calcul conso caméra DYNAMIQUE
             let cameraPower = camera.basePower;
             if (camera.maxTecPower) {
-                // Formule: Base + (MaxTEC × DeltaT/40)
-                // On considère 40°C comme Delta T max où TEC est à 100%
                 cameraPower += camera.maxTecPower * (deltaT / 40);
             }
             
@@ -618,7 +625,7 @@
                 document.getElementById('weight-status').style.color = '#f59e0b';
             } else {
                 bar.style.background = '#ef4444';
-                document.getElementById('weight-status').textContent = '🚨 SURCHARGE!';
+                document.getElementById('weight-status').textContent = ' SURCHARGE!';
                 document.getElementById('weight-status').style.color = '#ef4444';
             }
             
@@ -627,19 +634,18 @@
             document.getElementById('power-text').textContent = `${autonomy.toFixed(1)} heures`;
             document.getElementById('consumption-text').textContent = totalPower.toFixed(1);
             
-            // Afficher Delta T info
-            const deltaInfo = document.createElement('div');
-            deltaInfo.className = 'delta-info';
-            deltaInfo.innerHTML = `️ Delta T: ${deltaT}°C (Ext: ${currentAmbientTemp}°C → Cible: ${targetTemp}°C)<br>Conso TEC: ${((cameraPower - camera.basePower)).toFixed(1)}W / ${camera.maxTecPower}W max`;
-            
-            // Remplacer l'ancien delta info s'il existe
-            const oldDelta = document.querySelector('.delta-info');
-            if (oldDelta) oldDelta.remove();
-            document.getElementById('consumption-text').parentNode.appendChild(deltaInfo);
+            // Affichage Delta T
+            const deltaContainer = document.getElementById('delta-container');
+            deltaContainer.innerHTML = `
+                <div class="delta-info">
+                    🌡️ Delta T: ${deltaT}°C (Ext: ${currentAmbientTemp}°C → Cible: ${targetTemp}°C)<br>
+                    Conso TEC: ${(cameraPower - camera.basePower).toFixed(1)}W / ${camera.maxTecPower}W max
+                </div>
+            `;
             
             // Afficher cibles et réglages ASIAIR
             showTargets();
-            calculateASIAIRSettings();
+            calculateASIAIRSettings(percentage);
         }
 
         // Afficher cibles recommandées
@@ -677,34 +683,42 @@
             container.innerHTML = html;
         }
 
-        // Calculer réglages ASIAIR (CALIBRATION CORRIGÉE)
-        function calculateASIAIRSettings() {
+        // Calculer réglages ASIAIR (CALIBRATION + AGRESSIVITÉ AUTO)
+        function calculateASIAIRSettings(weightPercentage) {
             const guideScopeId = document.getElementById('guideScope').value;
             const guideCameraId = document.getElementById('guideCamera').value;
             
-            if (!guideScopeId || !guideCameraId) {
+            // Calibration
+            if (guideScopeId && guideCameraId) {
+                const guideScope = db.guideScopes[guideScopeId];
+                const guideCamera = db.guideCameras[guideCameraId];
+                
+                // Formule: Calibration (ms) = (165012 × pixel_µm) / focale_mm
+                const calibrationMs = Math.round((165012 * guideCamera.pixel) / guideScope.focal);
+                const scale = (206.265 * guideCamera.pixel) / guideScope.focal;
+                
+                document.getElementById('calib-value').textContent = `${calibrationMs} ms`;
+                document.getElementById('calib-steps').textContent = `~12 pas (échelle: ${scale.toFixed(2)}"/px)`;
+            } else {
                 document.getElementById('calib-value').textContent = '2000 ms';
                 document.getElementById('calib-steps').textContent = 'Valeur par défaut';
-                document.getElementById('guide-exposure').textContent = '2s';
-                document.getElementById('guide-gain').textContent = '120';
-                document.getElementById('min-move').textContent = '0.15"';
-                return;
             }
             
-            const guideScope = db.guideScopes[guideScopeId];
-            const guideCamera = db.guideCameras[guideCameraId];
+            // Calcul agressivité RA/DEC selon le poids
+            let recommendedAggression = 70;
+            if (weightPercentage < 50) {
+                recommendedAggression = 80; // Monture légère = plus réactive
+            } else if (weightPercentage > 80) {
+                recommendedAggression = 60; // Monture lourde = plus doux
+            }
             
-            // Formule CORRECTE pour calibration ASIAIR
-            // Objectif: obtenir ~12 pas
-            // Calibration (ms) = (165012 × pixel_µm) / focale_mm
-            const calibrationMs = Math.round((165012 * guideCamera.pixel) / guideScope.focal);
+            // Mettre à jour les sliders
+            document.getElementById('ra-slider').value = recommendedAggression;
+            document.getElementById('dec-slider').value = recommendedAggression;
+            document.getElementById('ra-value').textContent = recommendedAggression + '%';
+            document.getElementById('dec-value').textContent = recommendedAggression + '%';
             
-            // Calcul échelle (arcsec/pixel)
-            const scale = (206.265 * guideCamera.pixel) / guideScope.focal;
-            
-            // Affichage
-            document.getElementById('calib-value').textContent = `${calibrationMs} ms`;
-            document.getElementById('calib-steps').textContent = `~12 pas (échelle: ${scale.toFixed(2)}"/px)`;
+            // Temps de pose et gain
             document.getElementById('guide-exposure').textContent = '2s';
             document.getElementById('guide-gain').textContent = '120';
             document.getElementById('min-move').textContent = '0.15"';
@@ -715,21 +729,23 @@
             document.getElementById(elementId).textContent = value + '%';
         }
 
-        // Charger météo
+        // Charger météo (CORRIGÉ - utilise l'ID du bouton)
         async function loadWeather() {
-            const btn = document.querySelector('.btn');
+            const btn = document.getElementById('btn-meteo');
             const originalText = btn.textContent;
             btn.textContent = '📍 Chargement...';
+            btn.disabled = true;
             
             if (!navigator.geolocation) {
                 alert('Géolocalisation non supportée');
                 btn.textContent = originalText;
+                btn.disabled = false;
                 return;
             }
             
             navigator.geolocation.getCurrentPosition(async (pos) => {
-                let lat = pos.coords.latitude;
-                let lon = pos.coords.longitude;
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
                 
                 try {
                     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m&timezone=auto&forecast_days=3`;
@@ -738,20 +754,23 @@
                     
                     displayWeather(data, lat, lon);
                     btn.textContent = originalText;
+                    btn.disabled = false;
                 } catch (err) {
-                    alert('Erreur: ' + err.message);
+                    alert('Erreur météo: ' + err.message);
                     btn.textContent = originalText;
+                    btn.disabled = false;
                 }
-            }, () => {
-                alert('Accès GPS refusé');
+            }, (err) => {
+                alert('Accès GPS refusé: ' + err.message);
                 btn.textContent = originalText;
+                btn.disabled = false;
             });
         }
 
         function displayWeather(data, lat, lon) {
             const content = document.getElementById('weather-content');
             content.style.display = 'block';
-            document.getElementById('location-name').textContent = `📍 ${lat.toFixed(2)}° | ${lon.toFixed(2)}°`;
+            document.getElementById('location-name').textContent = ` ${lat.toFixed(2)}° | ${lon.toFixed(2)}°`;
             
             const hourly = data.hourly;
             if (!hourly || !hourly.cloud_cover) {
@@ -793,7 +812,7 @@
             let html = '<div style="margin-top:20px;">';
             
             for (let day = 0; day < 2; day++) {
-                let date = new Date(now);
+                const date = new Date(now);
                 date.setDate(date.getDate() + day);
                 const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
                 
@@ -867,7 +886,7 @@
                     <div class="time">${time}</div>
                     <div class="cloud">☁️ ${cloud}%</div>
                     <div class="temp">🌡️ ${temp}°C</div>
-                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:3px;">💧 ${dew}°C</div>
+                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:3px;"> ${dew}°C</div>
                 `;
                 hourlyContainer.appendChild(box);
             }
