@@ -27,6 +27,7 @@
         .container { max-width: 700px; margin: 0 auto; }
         h1 { text-align: center; color: var(--accent); font-size: 1.6rem; margin: 10px 0; }
         h2 { font-size: 1.1rem; color: var(--text-muted); margin: 25px 0 10px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        h3 { font-size: 1rem; margin: 15px 0 10px; }
         .subtitle { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom: 20px; }
         
         .card {
@@ -60,28 +61,26 @@
         .btn-primary { background-color: var(--accent); color: #0f172a; }
         .btn-primary:active { opacity: 0.8; }
         
-        /* Score Circle */
-        .score-container { text-align: center; padding: 20px 0; }
+        .score-container { text-align: center; padding: 15px 0; }
         .score-circle {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 8px solid #334155;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin: 10px 0;
         }
         .score-label { color: var(--text-muted); font-size: 0.9rem; }
         
-        /* Fenêtres de tir */
         .night-row { margin-bottom: 15px; }
-        .night-title { font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .night-title { font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 0.9rem; }
         .window-bar {
             display: flex;
-            height: 40px;
+            height: 35px;
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 5px;
@@ -91,7 +90,7 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
         .seg-excellent { background-color: var(--success); }
@@ -113,7 +112,6 @@
             font-size: 0.75rem;
         }
         .hour-box .time { font-weight: bold; color: var(--accent); }
-        .hour-box .cloud { color: var(--text-muted); }
         
         .result-box {
             background-color: #0f172a;
@@ -135,18 +133,50 @@
         }
         .status-text { font-weight: bold; font-size: 1.2rem; }
         .loading { text-align: center; color: var(--text-muted); padding: 20px; }
+        
+        .dew-alert {
+            background-color: #7f1d1d;
+            border: 2px solid var(--danger);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .dew-ok {
+            background-color: #14532d;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+        .checkbox-row input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        .checkbox-row label {
+            margin: 0;
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🔭 Astro Companion</h1>
+    <h1> Astro Companion</h1>
     <p class="subtitle">Ton compagnon de session astrophotographie</p>
 
     <!-- ========== MÉTÉO ========== -->
     <h2>🌙 Météo & Fenêtres de Tir</h2>
     <div class="card">
-        <button class="btn btn-primary" onclick="loadWeather()">📍 Charger ma position & météo</button>
+        <button class="btn btn-primary" onclick="loadWeather()"> Charger ma position & météo</button>
         <div id="weather-status" class="loading">Clique sur le bouton pour charger la météo</div>
         <div id="weather-content" style="display:none;">
             <div class="score-container">
@@ -155,10 +185,13 @@
                 <div id="location-name" style="color:var(--text-muted); font-size:0.9rem;"></div>
             </div>
             
-            <h3 style="margin:15px 0 10px; font-size:1rem;"> Fenêtres de tir (2 nuits)</h3>
+            <!-- Alerte Point de Rosée -->
+            <div id="dew-alert-container"></div>
+            
+            <h3>🌟 Fenêtres de tir (2 nuits)</h3>
             <div id="windows-container"></div>
             
-            <h3 style="margin:15px 0 10px; font-size:1rem;">⏰ Prévisions heure par heure</h3>
+            <h3>⏰ Prévisions heure par heure</h3>
             <div class="hourly-scroll" id="hourly-container"></div>
         </div>
     </div>
@@ -188,7 +221,61 @@
     </div>
 
     <div class="card">
-        <label> Batterie</label>
+        <label>🎯 Lunette de Guidage</label>
+        <select id="guideScope" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label> Caméra de Guidage</label>
+        <select id="guideCamera" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label> Roue à Filtres</label>
+        <select id="filterWheel" onchange="calculate()">
+            <option value="">-- Aucune --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label> Réducteur de Focale</label>
+        <select id="reducer" onchange="calculate()">
+            <option value="">-- Aucun --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label> Cordons Chauffants</label>
+        <div class="checkbox-row">
+            <input type="checkbox" id="heaterObjective" onchange="calculate()">
+            <label for="heaterObjective">Cordon objectif (15-25W)</label>
+        </div>
+        <div class="checkbox-row">
+            <input type="checkbox" id="heaterGuide" onchange="calculate()">
+            <label for="heaterGuide">Cordon guide (8-12W)</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <label>🖥️ Contrôleur</label>
+        <select id="controller" onchange="calculate()">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label>⚙️ Moteur Focus (EAF)</label>
+        <select id="eaf" onchange="calculate()">
+            <option value="">-- Aucun --</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <label>🔋 Batterie</label>
         <select id="battery" onchange="calculate()">
             <option value="">-- Sélectionner --</option>
         </select>
@@ -217,7 +304,7 @@
 </div>
 
 <script>
-// ========== BASE DE DONNÉES ENRICHIE ==========
+// ========== BASE DE DONNÉES COMPLÈTE ==========
 const db = {
     mounts: [
         { id: 'heq5', name: 'Sky-Watcher HEQ5 Pro', capacity: 16, weight: 12.5, power: 3.5 },
@@ -250,6 +337,48 @@ const db = {
         { id: 'qhy268', name: 'QHY 268C', weight: 0.8, power: 12.0 },
         { id: 'poseidon', name: 'Player One Poseidon-C 66 Pro', weight: 0.7, power: 11.0 }
     ],
+    guideScopes: [
+        { id: 'zwo30', name: 'ZWO 30mm f/4 Mini (120mm)', weight: 0.3, focal: 120 },
+        { id: 'zwo60', name: 'ZWO 60mm f/4.6 (280mm)', weight: 0.8, focal: 280 },
+        { id: 'zwo120', name: 'ZWO 120mm f/7.5 (900mm)', weight: 1.5, focal: 900 },
+        { id: 'svbony30', name: 'SVBony 30mm f/4 (120mm)', weight: 0.25, focal: 120 },
+        { id: 'orion50', name: 'Orion 50mm Mini (162mm)', weight: 0.4, focal: 162 }
+    ],
+    guideCameras: [
+        { id: 'asi120mm', name: 'ZWO ASI 120MM Mini', weight: 0.15, power: 2.0, pixel: 3.75 },
+        { id: 'asi290mm', name: 'ZWO ASI 290MM Mini', weight: 0.15, power: 2.0, pixel: 2.9 },
+        { id: 'asi462', name: 'ZWO ASI 462MC', weight: 0.2, power: 3.0, pixel: 2.9 },
+        { id: 'qhy5', name: 'QHY 5L-IIM', weight: 0.15, power: 2.5, pixel: 3.75 }
+    ],
+    filterWheels: [
+        { id: 'none', name: '-- Aucune --', weight: 0, power: 0 },
+        { id: 'efw7', name: 'ZWO EFW 7x36mm', weight: 0.6, power: 2.0 },
+        { id: 'efw8', name: 'ZWO EFW 8x31mm', weight: 0.5, power: 2.0 },
+        { id: 'efwmini', name: 'ZWO EFW Mini 5x1.25"', weight: 0.3, power: 1.5 },
+        { id: 'pegasus', name: 'Pegasus Indigo (7 pos)', weight: 0.7, power: 2.5 }
+    ],
+    reducers: [
+        { id: 'none', name: '-- Aucun --', weight: 0, factor: 1 },
+        { id: 'sw085', name: 'Sky-Watcher 0.85x (80ED)', weight: 0.3, factor: 0.85 },
+        { id: 'sw08', name: 'Sky-Watcher 0.8x (Esprit 100)', weight: 0.5, factor: 0.8 },
+        { id: 'c063', name: 'Celestron 0.63x (C8)', weight: 0.3, factor: 0.63 },
+        { id: 'ric075', name: 'Riccardi 0.75x', weight: 0.4, factor: 0.75 }
+    ],
+    controllers: [
+        { id: 'none', name: '-- Aucun --', weight: 0, power: 0 },
+        { id: 'asiairplus', name: 'ASIAIR Plus', weight: 0.3, power: 6.0 },
+        { id: 'asiairmini', name: 'ASIAIR Mini', weight: 0.2, power: 4.0 },
+        { id: 'asiairpro', name: 'ASIAIR Pro', weight: 0.35, power: 8.0 },
+        { id: 'ppba', name: 'Pegasus Pocket Powerbox Advance', weight: 0.2, power: 3.0 },
+        { id: 'minipc', name: 'Mini PC Intel NUC', weight: 0.8, power: 25.0 },
+        { id: 'rpi4', name: 'Raspberry Pi 4', weight: 0.15, power: 6.0 }
+    ],
+    eafs: [
+        { id: 'none', name: '-- Aucun --', weight: 0, power: 0 },
+        { id: 'zwoeaf', name: 'ZWO EAF', weight: 0.4, power: 3.0 },
+        { id: 'pegfc', name: 'Pegasus Focus Cube', weight: 0.3, power: 2.5 },
+        { id: 'moonlite', name: 'Moonlite New Classic', weight: 0.5, power: 3.5 }
+    ],
     batteries: [
         { id: 'lifepo4_20', name: 'LiFePO4 12V 20Ah (256Wh)', capacityWh: 256, weight: 2.5 },
         { id: 'lifepo4_50', name: 'LiFePO4 12V 50Ah (640Wh)', capacityWh: 640, weight: 6.0 },
@@ -265,6 +394,12 @@ function init() {
     populateSelect('mount', db.mounts);
     populateSelect('scope', db.scopes);
     populateSelect('camera', db.cameras);
+    populateSelect('guideScope', db.guideScopes);
+    populateSelect('guideCamera', db.guideCameras);
+    populateSelect('filterWheel', db.filterWheels);
+    populateSelect('reducer', db.reducers);
+    populateSelect('controller', db.controllers);
+    populateSelect('eaf', db.eafs);
     populateSelect('battery', db.batteries);
     loadSetup();
 }
@@ -279,7 +414,7 @@ function populateSelect(id, array) {
     });
 }
 
-// ========== MÉTÉO ==========
+// ========== MÉTÉO AVEC POINT DE ROSÉE ==========
 async function loadWeather() {
     const status = document.getElementById('weather-status');
     status.textContent = '📍 Localisation en cours...';
@@ -295,8 +430,8 @@ async function loadWeather() {
         status.textContent = '🌐 Chargement des prévisions...';
         
         try {
-            // Appel API Open-Meteo (gratuit, sans clé)
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,wind_speed_10m&timezone=auto&forecast_days=3`;
+            // API avec point de rosée (dew_point_2m)
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m,wind_speed_10m&timezone=auto&forecast_days=3`;
             const response = await fetch(url);
             const data = await response.json();
             
@@ -317,7 +452,7 @@ function displayWeather(data, lat, lon) {
     const now = new Date();
     const currentHour = now.getHours();
     
-    // Calcul du score global (moyenne des 8 prochaines heures)
+    // Calcul du score global
     let totalScore = 0;
     let count = 0;
     for (let i = 0; i < 8; i++) {
@@ -330,7 +465,6 @@ function displayWeather(data, lat, lon) {
     }
     const avgScore = Math.round(totalScore / count);
     
-    // Affichage score
     const circle = document.getElementById('score-circle');
     circle.textContent = avgScore + '/100';
     circle.style.borderColor = avgScore > 70 ? 'var(--success)' : avgScore > 40 ? 'var(--warning)' : 'var(--danger)';
@@ -338,7 +472,39 @@ function displayWeather(data, lat, lon) {
     
     document.getElementById('location-name').textContent = ` Lat: ${lat.toFixed(2)}° | Lon: ${lon.toFixed(2)}°`;
     
-    // Fenêtres de tir (2 nuits)
+    // Alerte Point de Rosée
+    const currentTemp = hourly.temperature_2m[currentHour];
+    const currentDew = hourly.dew_point_2m[currentHour];
+    const dewSpread = currentTemp - currentDew;
+    const dewContainer = document.getElementById('dew-alert-container');
+    
+    if (dewSpread <= 2) {
+        dewContainer.innerHTML = `
+            <div class="dew-alert">
+                💧 RISQUE DE BUÉE ÉLEVÉ !<br>
+                🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
+                 Active tes cordons chauffants à 70-100%
+            </div>
+        `;
+    } else if (dewSpread <= 4) {
+        dewContainer.innerHTML = `
+            <div class="dew-ok" style="background-color:#713f12; border-color:var(--warning);">
+                 Risque de buée modéré<br>
+                🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
+                🔥 Cordons chauffants à 40-60%
+            </div>
+        `;
+    } else {
+        dewContainer.innerHTML = `
+            <div class="dew-ok">
+                ✅ Pas de risque de buée<br>
+                🌡️ ${currentTemp}°C | Point de rosée: ${currentDew}°C (écart: ${dewSpread.toFixed(1)}°C)<br>
+                🔥 Cordons à 0-20% (économie d'énergie)
+            </div>
+        `;
+    }
+    
+    // Fenêtres de tir
     const windowsContainer = document.getElementById('windows-container');
     windowsContainer.innerHTML = '';
     
@@ -347,19 +513,18 @@ function displayWeather(data, lat, lon) {
         nightDate.setDate(nightDate.getDate() + day);
         const dateStr = nightDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
         
-        // Trouver les heures de nuit (20h à 6h du lendemain)
         let excellentHours = 0, correctHours = 0, badHours = 0;
-        const startHour = 20;
-        const endHour = 6;
         
-        for (let h = startHour; h < 24; h++) {
-            const cloud = hourly.cloud_cover[h + day * 24] || 0;
+        for (let h = 20; h < 24; h++) {
+            const idx = h + day * 24;
+            const cloud = hourly.cloud_cover[idx] || 0;
             if (cloud < 30) excellentHours++;
             else if (cloud < 60) correctHours++;
             else badHours++;
         }
-        for (let h = 0; h < endHour; h++) {
-            const cloud = hourly.cloud_cover[h + (day + 1) * 24] || 0;
+        for (let h = 0; h < 6; h++) {
+            const idx = h + (day + 1) * 24;
+            const cloud = hourly.cloud_cover[idx] || 0;
             if (cloud < 30) excellentHours++;
             else if (cloud < 60) correctHours++;
             else badHours++;
@@ -382,7 +547,7 @@ function displayWeather(data, lat, lon) {
         windowsContainer.appendChild(row);
     }
     
-    // Prévisions heure par heure (prochaines 12h)
+    // Prévisions heure par heure
     const hourlyContainer = document.getElementById('hourly-container');
     hourlyContainer.innerHTML = '';
     for (let i = 0; i < 12; i++) {
@@ -391,24 +556,34 @@ function displayWeather(data, lat, lon) {
             const time = new Date(hourly.time[idx]).getHours() + 'h';
             const cloud = hourly.cloud_cover[idx] || 0;
             const temp = Math.round(hourly.temperature_2m[idx]);
+            const dew = Math.round(hourly.dew_point_2m[idx]);
             const box = document.createElement('div');
             box.className = 'hour-box';
             box.innerHTML = `
                 <div class="time">${time}</div>
-                <div class="cloud">☁️ ${cloud}%</div>
-                <div>🌡️ ${temp}°C</div>
+                <div>☁️ ${cloud}%</div>
+                <div>️ ${temp}°C</div>
+                <div style="color:var(--text-muted); font-size:0.65rem;">💧${dew}°C</div>
             `;
             hourlyContainer.appendChild(box);
         }
     }
 }
 
-// ========== CALCUL SETUP ==========
+// ========== CALCUL SETUP COMPLET ==========
 function calculate() {
     const mountId = document.getElementById('mount').value;
     const scopeId = document.getElementById('scope').value;
     const cameraId = document.getElementById('camera').value;
+    const guideScopeId = document.getElementById('guideScope').value;
+    const guideCameraId = document.getElementById('guideCamera').value;
+    const filterWheelId = document.getElementById('filterWheel').value;
+    const reducerId = document.getElementById('reducer').value;
+    const controllerId = document.getElementById('controller').value;
+    const eafId = document.getElementById('eaf').value;
     const batteryId = document.getElementById('battery').value;
+    const heaterObjective = document.getElementById('heaterObjective').checked;
+    const heaterGuide = document.getElementById('heaterGuide').checked;
 
     if (!mountId || !scopeId || !cameraId || !batteryId) return;
 
@@ -416,8 +591,48 @@ function calculate() {
     const scope = db.scopes.find(s => s.id === scopeId);
     const camera = db.cameras.find(c => c.id === cameraId);
     const battery = db.batteries.find(b => b.id === batteryId);
+    
+    // Poids et conso des accessoires (optionnels)
+    let totalWeight = scope.weight + camera.weight + battery.weight;
+    let totalPower = mount.power + camera.power;
+    
+    if (guideScopeId) {
+        const gs = db.guideScopes.find(s => s.id === guideScopeId);
+        totalWeight += gs.weight;
+    }
+    if (guideCameraId) {
+        const gc = db.guideCameras.find(c => c.id === guideCameraId);
+        totalWeight += gc.weight;
+        totalPower += gc.power;
+    }
+    if (filterWheelId && filterWheelId !== 'none') {
+        const fw = db.filterWheels.find(f => f.id === filterWheelId);
+        totalWeight += fw.weight;
+        totalPower += fw.power;
+    }
+    if (reducerId && reducerId !== 'none') {
+        const r = db.reducers.find(r => r.id === reducerId);
+        totalWeight += r.weight;
+    }
+    if (heaterObjective) {
+        totalWeight += 0.15;
+        totalPower += 20; // Moyenne à 50% PWM
+    }
+    if (heaterGuide) {
+        totalWeight += 0.05;
+        totalPower += 10;
+    }
+    if (controllerId && controllerId !== 'none') {
+        const c = db.controllers.find(c => c.id === controllerId);
+        totalWeight += c.weight;
+        totalPower += c.power;
+    }
+    if (eafId && eafId !== 'none') {
+        const e = db.eafs.find(e => e.id === eafId);
+        totalWeight += e.weight;
+        totalPower += e.power;
+    }
 
-    const totalWeight = scope.weight + camera.weight + battery.weight;
     const percentage = (totalWeight / mount.capacity) * 100;
 
     document.getElementById('weight-text').textContent = `${totalWeight.toFixed(1)} kg / ${mount.capacity} kg`;
@@ -440,10 +655,9 @@ function calculate() {
         status.style.color = 'var(--danger)';
     }
 
-    const totalConsumption = mount.power + camera.power + 3; // +3W ASIAIR + guidage
-    const autonomy = battery.capacityWh / totalConsumption;
+    const autonomy = battery.capacityWh / totalPower;
     
-    document.getElementById('consumption-text').textContent = totalConsumption.toFixed(1);
+    document.getElementById('consumption-text').textContent = totalPower.toFixed(1);
     document.getElementById('power-text').textContent = `${autonomy.toFixed(1)} heures`;
 }
 
@@ -452,7 +666,15 @@ function saveSetup() {
         mount: document.getElementById('mount').value,
         scope: document.getElementById('scope').value,
         camera: document.getElementById('camera').value,
-        battery: document.getElementById('battery').value
+        guideScope: document.getElementById('guideScope').value,
+        guideCamera: document.getElementById('guideCamera').value,
+        filterWheel: document.getElementById('filterWheel').value,
+        reducer: document.getElementById('reducer').value,
+        controller: document.getElementById('controller').value,
+        eaf: document.getElementById('eaf').value,
+        battery: document.getElementById('battery').value,
+        heaterObjective: document.getElementById('heaterObjective').checked,
+        heaterGuide: document.getElementById('heaterGuide').checked
     };
     localStorage.setItem('astroSetup', JSON.stringify(setup));
     alert('✅ Setup sauvegardé !');
@@ -465,7 +687,15 @@ function loadSetup() {
         document.getElementById('mount').value = setup.mount || '';
         document.getElementById('scope').value = setup.scope || '';
         document.getElementById('camera').value = setup.camera || '';
+        document.getElementById('guideScope').value = setup.guideScope || '';
+        document.getElementById('guideCamera').value = setup.guideCamera || '';
+        document.getElementById('filterWheel').value = setup.filterWheel || 'none';
+        document.getElementById('reducer').value = setup.reducer || 'none';
+        document.getElementById('controller').value = setup.controller || 'none';
+        document.getElementById('eaf').value = setup.eaf || 'none';
         document.getElementById('battery').value = setup.battery || '';
+        document.getElementById('heaterObjective').checked = setup.heaterObjective || false;
+        document.getElementById('heaterGuide').checked = setup.heaterGuide || false;
         calculate();
     }
 }
