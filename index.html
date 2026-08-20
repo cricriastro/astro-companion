@@ -13,10 +13,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
         h1 {
             text-align: center;
             font-size: 2.5rem;
@@ -25,11 +22,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .subtitle {
-            text-align: center;
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -52,12 +45,7 @@
             align-items: center;
             gap: 10px;
         }
-        
-        /* Score Circle */
-        .score-container {
-            text-align: center;
-            padding: 20px;
-        }
+        .score-container { text-align: center; padding: 20px; }
         .score-circle {
             width: 160px;
             height: 160px;
@@ -69,14 +57,11 @@
             font-size: 3rem;
             font-weight: bold;
             margin: 15px 0;
-            position: relative;
             transition: all 0.5s;
         }
         .score-circle.good { border-color: #22c55e; color: #22c55e; box-shadow: 0 0 30px rgba(34, 197, 94, 0.4); }
         .score-circle.medium { border-color: #f59e0b; color: #f59e0b; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); }
         .score-circle.bad { border-color: #ef4444; color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
-        
-        /* Moon */
         .moon-info {
             display: flex;
             align-items: center;
@@ -90,11 +75,7 @@
         .moon-icon { font-size: 3rem; }
         .moon-phase { font-weight: bold; font-size: 1.1rem; }
         .moon-illum { color: #94a3b8; font-size: 0.9rem; }
-        
-        /* Windows */
-        .window-row {
-            margin-bottom: 15px;
-        }
+        .window-row { margin-bottom: 15px; }
         .window-header {
             display: flex;
             justify-content: space-between;
@@ -119,16 +100,8 @@
         .seg-good { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .seg-medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .seg-bad { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        
-        /* Hourly - SCROLL FIX */
-        .hourly-container {
-            margin-top: 20px;
-        }
-        .hourly-label {
-            color: #94a3b8;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
+        .hourly-container { margin-top: 20px; }
+        .hourly-label { color: #94a3b8; margin-bottom: 10px; font-size: 0.95rem; }
         .hourly-scroll {
             display: flex;
             gap: 10px;
@@ -138,17 +111,9 @@
             scrollbar-width: thin;
             scrollbar-color: #38bdf8 #1e293b;
         }
-        .hourly-scroll::-webkit-scrollbar {
-            height: 8px;
-        }
-        .hourly-scroll::-webkit-scrollbar-track {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        .hourly-scroll::-webkit-scrollbar-thumb {
-            background: #38bdf8;
-            border-radius: 4px;
-        }
+        .hourly-scroll::-webkit-scrollbar { height: 8px; }
+        .hourly-scroll::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        .hourly-scroll::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 4px; }
         .hour-box {
             min-width: 80px;
             flex-shrink: 0;
@@ -159,24 +124,14 @@
             border: 2px solid transparent;
             transition: all 0.3s;
         }
-        .hour-box:hover {
-            transform: translateY(-3px);
-        }
+        .hour-box:hover { transform: translateY(-3px); }
         .hour-box.good { border-color: #22c55e; background: rgba(34, 197, 94, 0.2); }
         .hour-box.medium { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); }
         .hour-box.bad { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); }
         .hour-box .time { font-weight: bold; color: #38bdf8; margin-bottom: 5px; }
         .hour-box .cloud, .hour-box .temp { margin: 3px 0; font-size: 0.9rem; }
-        
-        /* Material selects */
         .form-group { margin-bottom: 15px; }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #94a3b8; font-size: 0.9rem; }
         select, input {
             width: 100%;
             padding: 12px;
@@ -186,18 +141,8 @@
             color: white;
             font-size: 1rem;
         }
-        select:focus, input:focus {
-            outline: none;
-            border-color: #38bdf8;
-        }
-        
-        /* Checkbox for heaters */
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 10px 0;
-        }
+        select:focus, input:focus { outline: none; border-color: #38bdf8; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
         .checkbox-item {
             display: flex;
             align-items: center;
@@ -207,18 +152,8 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        .checkbox-item label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
-        }
-        
-        /* Buttons */
+        .checkbox-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
+        .checkbox-item label { margin: 0; cursor: pointer; flex: 1; }
         .btn {
             width: 100%;
             padding: 15px;
@@ -232,26 +167,9 @@
             margin-top: 10px;
             transition: all 0.3s;
         }
-        .btn:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-        }
-        
-        /* Progress */
-        .progress-bg {
-            background: #334155;
-            border-radius: 10px;
-            height: 25px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            transition: all 0.5s;
-            border-radius: 10px;
-        }
-        
-        /* Targets */
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
+        .progress-bg { background: #334155; border-radius: 10px; height: 25px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; transition: all 0.5s; border-radius: 10px; }
         .target-card {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 12px;
@@ -259,96 +177,32 @@
             margin-bottom: 15px;
             border-left: 4px solid #38bdf8;
         }
-        .target-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
+        .target-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .target-name { font-weight: bold; font-size: 1.05rem; }
-        .target-score { 
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+        .target-score { background: rgba(34, 197, 94, 0.2); color: #22c55e; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
         .target-type { color: #94a3b8; font-size: 0.85rem; margin-bottom: 8px; }
-        .target-filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .filter-tag {
-            background: rgba(56, 189, 248, 0.2);
-            color: #38bdf8;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-        }
-        
-        /* ASIAIR Settings */
-        .settings-title {
-            color: #38bdf8;
-            margin: 25px 0 15px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .setting-box {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 10px;
-            padding: 15px;
-        }
-        .setting-label {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 5px;
-        }
-        .setting-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #38bdf8;
-        }
-        .slider {
-            width: 100%;
+        .target-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-tag { background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; }
+        .settings-title { color: #38bdf8; margin: 25px 0 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .setting-box { background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 15px; }
+        .setting-label { color: #94a3b8; font-size: 0.85rem; margin-bottom: 5px; }
+        .setting-value { font-size: 1.3rem; font-weight: bold; color: #38bdf8; }
+        .setting-detail { color: #94a3b8; font-size: 0.75rem; margin-top: 5px; }
+        .slider { width: 100%; margin: 10px 0; cursor: pointer; }
+        .weight-section { margin-top: 20px; padding: 20px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; }
+        .weight-title { text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; }
+        .weight-value { text-align: center; font-size: 1.5rem; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
+        .weight-status { text-align: center; font-size: 0.9rem; margin-top: 8px; }
+        .delta-info {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #38bdf8;
+            border-radius: 8px;
+            padding: 10px;
             margin: 10px 0;
-            cursor: pointer;
-        }
-        
-        /* Weight display */
-        .weight-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-        }
-        .weight-title {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        .weight-value {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #38bdf8;
-            margin-bottom: 10px;
-        }
-        .weight-status {
             text-align: center;
             font-size: 0.9rem;
-            margin-top: 8px;
         }
-        
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
             .settings-grid { grid-template-columns: 1fr; }
@@ -370,7 +224,6 @@
                         <div class="score-circle" id="score-circle">--</div>
                         <div id="location-name" style="color:#94a3b8; font-size:0.9rem;"></div>
                     </div>
-                    
                     <div class="moon-info" id="moon-info" style="display:none;">
                         <span class="moon-icon" id="moon-icon">🌑</span>
                         <div>
@@ -378,9 +231,7 @@
                             <div class="moon-illum">Illumination: <span id="moon-illum">0</span>%</div>
                         </div>
                     </div>
-                    
                     <div id="windows-container"></div>
-                    
                     <div class="hourly-container">
                         <div class="hourly-label">⏰ Prévisions heure par heure</div>
                         <div class="hourly-scroll" id="hourly-container"></div>
@@ -428,6 +279,18 @@
                         <option value="asi294">ZWO ASI 294MC Pro</option>
                         <option value="asi533">ZWO ASI 533MC Pro</option>
                         <option value="asi6200">ZWO ASI 6200MC Pro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🌡️ Température Cible Capteur</label>
+                    <select id="targetTemp" onchange="calculate()">
+                        <option value="0">0°C (Économie)</option>
+                        <option value="-10" selected>-10°C (Standard)</option>
+                        <option value="-15">-15°C</option>
+                        <option value="-20">-20°C (Performance)</option>
+                        <option value="-25">-25°C</option>
+                        <option value="-30">-30°C (Max)</option>
                     </select>
                 </div>
                 
@@ -543,20 +406,21 @@
             
             <!-- PANEL 3: CIBLES & ASIAIR -->
             <div class="panel">
-                <h2> Cibles & ASIAIR</h2>
+                <h2>🎯 Cibles & ASIAIR</h2>
                 
-                <div class="settings-title">Cibles recommandées</div>
+                <div class="settings-title">🎯 Cibles recommandées</div>
                 <div id="targets-container">
                     <div style="color:#94a3b8; text-align:center; padding:30px;">
                         Sélectionne ton setup pour voir les cibles
                     </div>
                 </div>
                 
-                <div class="settings-title">️ Réglages ASIAIR</div>
+                <div class="settings-title">⚙️ Réglages ASIAIR</div>
                 <div class="settings-grid">
                     <div class="setting-box">
-                        <div class="setting-label">Calibration</div>
-                        <div class="setting-value" id="calib-value">6s</div>
+                        <div class="setting-label">Calibration (ASIAIR)</div>
+                        <div class="setting-value" id="calib-value">2000 ms</div>
+                        <div class="setting-detail" id="calib-steps">Objectif: ~12 pas</div>
                     </div>
                     <div class="setting-box">
                         <div class="setting-label">Agressivité RA</div>
@@ -586,6 +450,9 @@
     </div>
 
     <script>
+        // Variable globale pour la température ambiante
+        let currentAmbientTemp = 15; // Valeur par défaut
+
         // Base de données complète
         const db = {
             mounts: {
@@ -606,11 +473,11 @@
                 'wr73': { weight: 3.2 }
             },
             cameras: {
-                'asi183': { weight: 0.35, power: 8.0 },
-                'asi2600': { weight: 0.8, power: 12.0 },
-                'asi294': { weight: 0.6, power: 11.0 },
-                'asi533': { weight: 0.5, power: 10.0 },
-                'asi6200': { weight: 0.9, power: 15.0 }
+                'asi183': { weight: 0.35, basePower: 3.0, maxTecPower: 8.0 },
+                'asi2600': { weight: 0.8, basePower: 4.0, maxTecPower: 14.0 },
+                'asi294': { weight: 0.6, basePower: 3.5, maxTecPower: 12.0 },
+                'asi533': { weight: 0.5, basePower: 3.5, maxTecPower: 10.0 },
+                'asi6200': { weight: 0.9, basePower: 5.0, maxTecPower: 18.0 }
             },
             guideScopes: {
                 'zwo30': { weight: 0.3, focal: 120 },
@@ -669,11 +536,12 @@
             ]
         };
 
-        // Calculer poids et autonomie
+        // Calculer poids et autonomie (AVEC DELTA T)
         function calculate() {
             const mountId = document.getElementById('mount').value;
             const scopeId = document.getElementById('scope').value;
             const cameraId = document.getElementById('camera').value;
+            const targetTemp = parseInt(document.getElementById('targetTemp').value);
             const guideScopeId = document.getElementById('guideScope').value;
             const guideCameraId = document.getElementById('guideCamera').value;
             const filterId = document.getElementById('filterWheel').value || 'none';
@@ -691,9 +559,21 @@
             const camera = db.cameras[cameraId];
             const battery = db.batteries[batteryId];
             
-            // Calcul poids (SANS batterie - elle est au sol)
+            // Calcul Delta T
+            let deltaT = currentAmbientTemp - targetTemp;
+            if (deltaT < 0) deltaT = 0;
+            
+            // Calcul conso caméra DYNAMIQUE
+            let cameraPower = camera.basePower;
+            if (camera.maxTecPower) {
+                // Formule: Base + (MaxTEC × DeltaT/40)
+                // On considère 40°C comme Delta T max où TEC est à 100%
+                cameraPower += camera.maxTecPower * (deltaT / 40);
+            }
+            
+            // Calcul poids (SANS batterie)
             let totalWeight = scope.weight + camera.weight;
-            let totalPower = mount.power + camera.power;
+            let totalPower = mount.power + cameraPower;
             
             if (guideScopeId) totalWeight += db.guideScopes[guideScopeId].weight;
             if (guideCameraId) {
@@ -734,7 +614,7 @@
                 document.getElementById('weight-status').style.color = '#22c55e';
             } else if (percentage < 90) {
                 bar.style.background = '#f59e0b';
-                document.getElementById('weight-status').textContent = '️ Charge acceptable';
+                document.getElementById('weight-status').textContent = '⚠️ Charge acceptable';
                 document.getElementById('weight-status').style.color = '#f59e0b';
             } else {
                 bar.style.background = '#ef4444';
@@ -747,6 +627,16 @@
             document.getElementById('power-text').textContent = `${autonomy.toFixed(1)} heures`;
             document.getElementById('consumption-text').textContent = totalPower.toFixed(1);
             
+            // Afficher Delta T info
+            const deltaInfo = document.createElement('div');
+            deltaInfo.className = 'delta-info';
+            deltaInfo.innerHTML = `️ Delta T: ${deltaT}°C (Ext: ${currentAmbientTemp}°C → Cible: ${targetTemp}°C)<br>Conso TEC: ${((cameraPower - camera.basePower)).toFixed(1)}W / ${camera.maxTecPower}W max`;
+            
+            // Remplacer l'ancien delta info s'il existe
+            const oldDelta = document.querySelector('.delta-info');
+            if (oldDelta) oldDelta.remove();
+            document.getElementById('consumption-text').parentNode.appendChild(deltaInfo);
+            
             // Afficher cibles et réglages ASIAIR
             showTargets();
             calculateASIAIRSettings();
@@ -756,8 +646,6 @@
         function showTargets() {
             const container = document.getElementById('targets-container');
             const currentMonth = new Date().getMonth();
-            
-            // Déterminer la saison
             let currentSeason;
             if (currentMonth >= 2 && currentMonth <= 4) currentSeason = 'Printemps';
             else if (currentMonth >= 5 && currentMonth <= 7) currentSeason = 'Été';
@@ -786,17 +674,17 @@
                     `;
                 });
             }
-            
             container.innerHTML = html;
         }
 
-        // Calculer réglages ASIAIR
+        // Calculer réglages ASIAIR (CALIBRATION CORRIGÉE)
         function calculateASIAIRSettings() {
             const guideScopeId = document.getElementById('guideScope').value;
             const guideCameraId = document.getElementById('guideCamera').value;
             
             if (!guideScopeId || !guideCameraId) {
-                document.getElementById('calib-value').textContent = '6s';
+                document.getElementById('calib-value').textContent = '2000 ms';
+                document.getElementById('calib-steps').textContent = 'Valeur par défaut';
                 document.getElementById('guide-exposure').textContent = '2s';
                 document.getElementById('guide-gain').textContent = '120';
                 document.getElementById('min-move').textContent = '0.15"';
@@ -806,11 +694,17 @@
             const guideScope = db.guideScopes[guideScopeId];
             const guideCamera = db.guideCameras[guideCameraId];
             
-            // Calcul calibration
-            const pixelScale = (guideCamera.pixel * 206.265) / guideScope.focal;
-            const calibTime = Math.max(2, Math.round(12 / pixelScale));
+            // Formule CORRECTE pour calibration ASIAIR
+            // Objectif: obtenir ~12 pas
+            // Calibration (ms) = (165012 × pixel_µm) / focale_mm
+            const calibrationMs = Math.round((165012 * guideCamera.pixel) / guideScope.focal);
             
-            document.getElementById('calib-value').textContent = `${calibTime}s`;
+            // Calcul échelle (arcsec/pixel)
+            const scale = (206.265 * guideCamera.pixel) / guideScope.focal;
+            
+            // Affichage
+            document.getElementById('calib-value').textContent = `${calibrationMs} ms`;
+            document.getElementById('calib-steps').textContent = `~12 pas (échelle: ${scale.toFixed(2)}"/px)`;
             document.getElementById('guide-exposure').textContent = '2s';
             document.getElementById('guide-gain').textContent = '120';
             document.getElementById('min-move').textContent = '0.15"';
@@ -834,8 +728,8 @@
             }
             
             navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
+                let lat = pos.coords.latitude;
+                let lon = pos.coords.longitude;
                 
                 try {
                     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloud_cover,temperature_2m,dew_point_2m&timezone=auto&forecast_days=3`;
@@ -868,6 +762,9 @@
             const now = new Date();
             const currentHour = now.getHours();
             
+            // Sauvegarder température actuelle pour calcul Delta T
+            currentAmbientTemp = hourly.temperature_2m[currentHour] || 15;
+            
             // Calcul score
             let totalScore = 0;
             let count = 0;
@@ -880,12 +777,11 @@
             }
             const avgScore = count > 0 ? Math.round(totalScore / count) : 0;
             
-            // Affichage score
             const circle = document.getElementById('score-circle');
             circle.textContent = `${avgScore}/100`;
             circle.className = 'score-circle ' + (avgScore > 70 ? 'good' : avgScore > 40 ? 'medium' : 'bad');
             
-            // Lune - Calcul CORRECT
+            // Lune
             const moonPhase = calculateMoonPhase(now);
             document.getElementById('moon-info').style.display = 'flex';
             document.getElementById('moon-icon').textContent = moonPhase.icon;
@@ -897,13 +793,12 @@
             let html = '<div style="margin-top:20px;">';
             
             for (let day = 0; day < 2; day++) {
-                const date = new Date(now);
+                let date = new Date(now);
                 date.setDate(date.getDate() + day);
                 const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
                 
                 let good = 0, medium = 0, bad = 0;
                 
-                // Heures de nuit (20h à 6h)
                 for (let h = 20; h < 24; h++) {
                     const idx = h + day * 24;
                     if (idx < hourly.cloud_cover.length) {
@@ -951,7 +846,7 @@
             html += '</div>';
             windowsContainer.innerHTML = html;
             
-            // Prévisions heure par heure (12h)
+            // Prévisions heure par heure
             const hourlyContainer = document.getElementById('hourly-container');
             hourlyContainer.innerHTML = '';
             
@@ -961,11 +856,10 @@
                 const cloud = hourly.cloud_cover[idx] || 0;
                 const temp = Math.round(hourly.temperature_2m[idx] || 0);
                 const dew = Math.round(hourly.dew_point_2m[idx] || 0);
-                const dewSpread = (hourly.temperature_2m[idx] || 0) - (hourly.dew_point_2m[idx] || 0);
                 
                 let quality = 'bad';
-                if (cloud < 30 && dewSpread > 2) quality = 'good';
-                else if (cloud < 60 && dewSpread > 2) quality = 'medium';
+                if (cloud < 30 && (temp - dew) > 2) quality = 'good';
+                else if (cloud < 60 && (temp - dew) > 2) quality = 'medium';
                 
                 const box = document.createElement('div');
                 box.className = `hour-box ${quality}`;
@@ -977,21 +871,18 @@
                 `;
                 hourlyContainer.appendChild(box);
             }
+            
+            // Recalculer avec la nouvelle température
+            calculate();
         }
 
-        // Calcul phase lunaire PRÉCIS
+        // Calcul phase lunaire
         function calculateMoonPhase(date) {
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
-            
             let c = 0, e = 0, jd = 0, b = 0;
-            
-            if (month < 3) {
-                year--;
-                month += 12;
-            }
-            
+            if (month < 3) { year--; month += 12; }
             ++month;
             c = 365.25 * year;
             e = 30.6 * month;
@@ -1000,9 +891,7 @@
             b = parseInt(jd);
             jd -= b;
             b = Math.round(jd * 8);
-            
             if (b >= 8) b = 0;
-            
             const phases = [
                 { name: 'Nouvelle Lune', icon: '🌑', illumination: 0 },
                 { name: 'Premier croissant', icon: '🌒', illumination: 12 },
@@ -1011,22 +900,20 @@
                 { name: 'Pleine Lune', icon: '🌕', illumination: 100 },
                 { name: 'Gibbeuse décroissante', icon: '🌖', illumination: 60 },
                 { name: 'Dernier quartier', icon: '🌗', illumination: 50 },
-                { name: 'Dernier croissant', icon: '', illumination: 10 }
+                { name: 'Dernier croissant', icon: '🌘', illumination: 10 }
             ];
-            
             return phases[b];
         }
 
         // Sauvegarder setup
         function saveSetup() {
             const setup = {};
-            ['mount', 'scope', 'camera', 'guideScope', 'guideCamera', 'filterWheel', 'reducer', 'controller', 'eaf', 'battery'].forEach(id => {
+            ['mount', 'scope', 'camera', 'targetTemp', 'guideScope', 'guideCamera', 'filterWheel', 'reducer', 'controller', 'eaf', 'battery'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) setup[id] = el.value;
             });
             setup.heaterObjective = document.getElementById('heaterObjective').checked;
             setup.heaterGuide = document.getElementById('heaterGuide').checked;
-            
             localStorage.setItem('astroSetup', JSON.stringify(setup));
             alert('✅ Setup sauvegardé!');
         }
